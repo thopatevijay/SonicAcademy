@@ -15,6 +15,7 @@
     "@elizaos/client-twitter": "latest",
     "@elizaos/core": "latest",
     "@elizaos/adapter-sqlite": "latest",
+    "@elizaos/client-direct": "latest",
     "amqplib": "0.10.5",
     "better-sqlite3": "11.8.1",
     "fs": "0.0.1-security",
