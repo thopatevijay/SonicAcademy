@@ -120,7 +120,7 @@ const checkPortAvailable = (port: number): Promise<boolean> => {
 
 const startAgents = async () => {
   const directClient = new DirectClient();
-  let serverPort = parseInt(process.env.PORT || settings.SERVER_PORT || "3000");
+  let serverPort = parseInt(process.env.PORT || "3000");
   const args = parseArguments();
 
   let charactersArg = args.characters || args.character;
@@ -151,10 +151,7 @@ const startAgents = async () => {
   };
 
   directClient.start(serverPort);
-
-  if (serverPort !== parseInt(settings.SERVER_PORT || "3000")) {
-    elizaLogger.log(`Server started on port ${serverPort}`);
-  }
+  elizaLogger.log(`Server attempting to start on port ${serverPort}`);
 
   const isDaemonProcess = process.env.DAEMON_PROCESS === "true";
   if(!isDaemonProcess) {
