@@ -1,13 +1,14 @@
 {
-  "name": "mainAI",
+  "name": "sonic-academy",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node --loader ts-node/esm src/index.ts",
-
-    "build": "tsc"
+    "start:service:all": "pm2 start pnpm --name=\"all\" --restart-delay=3000 --max-restarts=10 -- run start:all",
+    "stop:service:all": "pm2 stop all",
+    "build": "tsup src/index.ts --format esm --dts"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,7 @@
     "sharp": "0.33.5"
   },
   "devDependencies": {
+    "pm2": "5.4.3",
     "ts-node": "10.9.2",
     "tsx": "^4.7.0",
     "typescript": "^5.7.3",
