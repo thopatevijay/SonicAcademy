@@ -37,8 +37,13 @@
     "tsup": "8.3.5"
   },
   "engines": {
-    "node": "^23.1.0"
+    "node": ">=18.0.0 <20.0.0",
+    "pnpm": ">=8"
   },
-  "packageManager": "pnpm@9.15.0",
+  "pnpm": {
+    "overrides": {
+      "onnxruntime-node": "1.20.0"
+    }
+  },
   "type": "module"
 }
