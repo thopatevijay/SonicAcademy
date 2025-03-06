@@ -66,6 +66,7 @@ async function startAgent(character: Character, directClient: DirectClient) {
     character.username ??= character.name;
 
     const token = getTokenForProvider(character.modelProvider, character);
+    console.log("Starting agent with ID:", character.id);
     const dataDir = path.join(__dirname, "../data");
 
     if (!fs.existsSync(dataDir)) {
@@ -84,6 +85,8 @@ async function startAgent(character: Character, directClient: DirectClient) {
     runtime.clients = await initializeClients(character, runtime);
 
     directClient.registerAgent(runtime);
+    console.log("Agent registered with ID:", runtime.agentId);
+
 
     // report to console
     elizaLogger.debug(`Started ${character.name} as ${runtime.agentId}`);
@@ -120,23 +123,14 @@ const checkPortAvailable = (port: number): Promise<boolean> => {
 
 const startAgents = async () => {
   const directClient = new DirectClient();
-  let serverPort = parseInt(process.env.PORT || "3000");
-  const args = parseArguments();
+  let serverPort = parseInt(settings.SERVER_PORT);
 
-  let charactersArg = args.characters || args.character;
-  let characters = [character];
-
-  console.log("charactersArg", charactersArg);
-  if (charactersArg) {
-    characters = await loadCharacters(charactersArg);
-  }
-  console.log("characters", characters);
   try {
-    for (const character of characters) {
-      await startAgent(character, directClient as DirectClient);
-    }
+    const runtime = await startAgent(character, directClient as DirectClient);
+    console.log("Agent runtime created with ID:", runtime.agentId);
   } catch (error) {
     elizaLogger.error("Error starting agents:", error);
+    process.exit(1);
   }
 
   while (!(await checkPortAvailable(serverPort))) {
@@ -144,20 +138,23 @@ const startAgents = async () => {
     serverPort++;
   }
 
-  // upload some agent functionality into directClient
   directClient.startAgent = async (character: Character) => {
-    // wrap it so we don't have to inject directClient later
     return startAgent(character, directClient);
   };
 
-  directClient.start(serverPort);
-  elizaLogger.log(`Server attempting to start on port ${serverPort}`);
+  console.log("=".repeat(50));
+  console.log(`Attempting to start server on port ${serverPort}`);
+  
+  await new Promise<void>((resolve) => {
+    directClient.start(serverPort);
+    console.log(`🚀 Server successfully started on port ${serverPort}`);
+    elizaLogger.success(`Server is now running on port ${serverPort}`);
+    console.log("=".repeat(50));
+    setTimeout(resolve, 2000);
+  });
 
-  const isDaemonProcess = process.env.DAEMON_PROCESS === "true";
-  if(!isDaemonProcess) {
-    elizaLogger.log("Chat started. Type 'exit' to quit.");
-    const chat = startChat(characters);
-    chat();
+  if (serverPort !== parseInt(settings.SERVER_PORT)) {
+    elizaLogger.log(`Note: Server is running on alternate port ${serverPort} (original port was ${settings.SERVER_PORT})`);
   }
 };
 
