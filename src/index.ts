@@ -142,13 +142,19 @@ const startAgents = async () => {
     return startAgent(character, directClient);
   };
 
+  console.log("=".repeat(50));
+  console.log(`Attempting to start server on port ${serverPort}`);
+  
   await new Promise<void>((resolve) => {
     directClient.start(serverPort);
+    console.log(`🚀 Server successfully started on port ${serverPort}`);
+    elizaLogger.success(`Server is now running on port ${serverPort}`);
+    console.log("=".repeat(50));
     setTimeout(resolve, 2000);
   });
 
   if (serverPort !== parseInt(settings.SERVER_PORT)) {
-    elizaLogger.log(`Server started on alternate port ${serverPort}`);
+    elizaLogger.log(`Note: Server is running on alternate port ${serverPort} (original port was ${settings.SERVER_PORT})`);
   }
 };
 
