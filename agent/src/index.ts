@@ -20,7 +20,7 @@ import {
   parseArguments,
 } from "./config/index.ts";
 import { initializeDatabase } from "./database/index.ts";
-
+import { sonicAgentAcademyPlugin } from "./sonic-agent-academy-plugin/index.ts";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -51,6 +51,7 @@ export function createAgent(
     evaluators: [],
     character,
     plugins: [
+      sonicAgentAcademyPlugin,
     ].filter(Boolean),
     providers: [],
     actions: [],
@@ -144,7 +145,7 @@ const startAgents = async () => {
 
   console.log("=".repeat(50));
   console.log(`Attempting to start server on port ${serverPort}`);
-  
+
   await new Promise<void>((resolve) => {
     directClient.start(serverPort);
     console.log(`🚀 Server successfully started on port ${serverPort}`);
@@ -155,6 +156,13 @@ const startAgents = async () => {
 
   if (serverPort !== parseInt(settings.SERVER_PORT)) {
     elizaLogger.log(`Note: Server is running on alternate port ${serverPort} (original port was ${settings.SERVER_PORT})`);
+  }
+
+  const isDaemonProcess = process.env.DAEMON_PROCESS === "true";
+  if (!isDaemonProcess) {
+    elizaLogger.log("Chat started. Type 'exit' to quit.");
+    const chat = startChat([character]);
+    chat();
   }
 };
 
