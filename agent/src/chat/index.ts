@@ -19,17 +19,26 @@ async function handleUserInput(input, agentId) {
 
   try {
     const serverPort = parseInt(settings.SERVER_PORT || "3000");
+    let payload = {
+      text: input,
+      userId: "user",
+      userName: "User",
+      lessonId: null,
+    };
+
+    // Check if it's a lesson request
+    if (input.toLowerCase().startsWith("start lesson")) {
+      const lessonId = input.split(" ")[2]; // e.g., "1" from "Start Lesson 1"
+      payload.lessonId = `lesson${lessonId}`;
+    }
+    
 
     const response = await fetch(
       `http://localhost:${serverPort}/${agentId}/message`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: input,
-          userId: "user",
-          userName: "User",
-        }),
+        body: JSON.stringify(payload),
       }
     );
 
