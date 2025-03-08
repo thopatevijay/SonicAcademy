@@ -39,8 +39,12 @@ export default function Lessons() {
     const [currentLesson, setCurrentLesson] = useState(0);
     const [lessonData, setLessonData] = useState<LessonData>({ title: '', content: '' });
     const [loading, setLoading] = useState(false);
+    const [userData, setUserData] = useState<UserData>({ ageGroup: '', learningStyle: '', experienceLevel: '' });
 
-    const userData: UserData = JSON.parse(localStorage?.getItem('userData') ?? '{}');
+    useEffect(() => {
+        const storedUserData = JSON.parse(localStorage?.getItem('userData') ?? '{}');
+        setUserData(storedUserData);
+    }, []);
 
     const requestLessons = useCallback(async (lesson: Lesson) => {
         try {
@@ -62,7 +66,6 @@ export default function Lessons() {
             setLessonData(parseLesson(data[0].text));
         } catch (error) {
             console.error('Error requesting lessons:', error);
-            // Handle error state here
         } finally {
             setLoading(false);
         }
@@ -70,8 +73,7 @@ export default function Lessons() {
 
     useEffect(() => {
         if (!userData.ageGroup) {
-            router.push('/');
-            return;
+            return; // Don't redirect immediately, wait for userData to be loaded
         }
 
         if (currentLesson === 0) {
@@ -82,7 +84,7 @@ export default function Lessons() {
 
     const handleLessonNavigation = (direction: 'next' | 'previous') => {
         if (currentLesson === TOTAL_LESSONS && direction === 'next') {
-            router.push('/aibuilder');
+            router.push('/ai-builder');
             return;
         }
 
@@ -116,7 +118,7 @@ export default function Lessons() {
             <div className="cyber-box w-full max-w-5xl min-h-[60vh] p-16 mb-8">
                 {loading ? (
                     <div className="flex items-center justify-center h-[40vh]">
-                        <div className="text-xl text-gray-400">crafting your mission… Get ready to explore!</div>
+                        <div className="text-xl text-gray-400">Crafting your mission… Get ready to explore!</div>
                     </div>
                 ) : (
                     <>
@@ -135,8 +137,8 @@ export default function Lessons() {
                 <button
                     onClick={() => handleLessonNavigation('previous')}
                     className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 
-            ${currentLesson === 0 ? 'opacity-50' : 'hover:opacity-90'}`}
-                    disabled={currentLesson === 0}
+            ${(currentLesson <= 1 || loading) ? 'opacity-50' : 'hover:opacity-90'}`}
+                    disabled={currentLesson <= 1 || loading}
                 >
                     Previous Lesson
                 </button>
@@ -144,7 +146,8 @@ export default function Lessons() {
                 <button
                     onClick={() => handleLessonNavigation('next')}
                     className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2
-            ${currentLesson === TOTAL_LESSONS ? 'opacity-50' : 'hover:opacity-90'}`}
+            ${(loading) ? 'opacity-50' : 'hover:opacity-90'}`}
+                    disabled={loading}
                 >
                     {currentLesson === TOTAL_LESSONS ? 'Go to AI Builder' : 'Next Lesson'}
                     <FaChevronRight />
