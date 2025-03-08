@@ -25,8 +25,8 @@ interface UserData {
 
 const parseLesson = (xmlString: string): LessonData => {
     const cleanXml = xmlString.replace(/```/g, '').trim();
-    const titleMatch = cleanXml.match(/<lesson_title>(.*?)<\/lesson_title>/s);
-    const contentMatch = cleanXml.match(/<lesson_content>(.*?)<\/lesson_content>/s);
+    const titleMatch = cleanXml.match(/<lesson_title>([\s\S]*?)<\/lesson_title>/);
+    const contentMatch = cleanXml.match(/<lesson_content>([\s\S]*?)<\/lesson_content>/);
 
     return {
         title: titleMatch?.[1]?.trim() ?? '',
