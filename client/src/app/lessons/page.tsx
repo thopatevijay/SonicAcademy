@@ -1,6 +1,8 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { FaChevronRight } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+
 enum Lesson {
     LESSON_1 = "Lesson 1",
     LESSON_2 = "Lesson 2",
@@ -21,6 +23,7 @@ const parseLesson = (xmlString: string) => {
 };
 
 export default function Lessons() {
+    const router = useRouter();
     const [currentLesson, setCurrentLesson] = useState(0);
     const [lessonData, setLessonData] = useState<{ title: string; content: string }>({ title: '', content: '' });
     const [loading, setLoading] = useState(false);
@@ -28,7 +31,6 @@ export default function Lessons() {
     const totalLessons = 1;
 
     const userData = JSON.parse(localStorage?.getItem('userData') || '{}');
-    console.log(userData);
 
     const requestLessons = useCallback(async (lesson: Lesson) => {
         try {
@@ -52,9 +54,53 @@ export default function Lessons() {
         }
     }, [userData.ageGroup, userData.learningStyle, userData.experienceLevel]);
 
+    useEffect(() => {
+        if (!userData) {
+            router.push('/');
+        }
+        if (currentLesson === 0) {
+            requestLessons(Lesson.LESSON_1);
+            setCurrentLesson(1);
+        }
+    }, [requestLessons, currentLesson, userData, router]);
+
     // To enable circular navigation:
     const handleNextLesson = () => {
-        setCurrentLesson(prev => (prev + 1) % totalLessons);
+        switch (currentLesson) {
+            case 0:
+                requestLessons(Lesson.LESSON_1);
+                setCurrentLesson(1);
+                break;
+            case 1:
+                requestLessons(Lesson.LESSON_2);
+                setCurrentLesson(2);
+                break;
+            case 2:
+                requestLessons(Lesson.LESSON_3);
+                setCurrentLesson(3);
+                break;
+            case 3:
+                requestLessons(Lesson.LESSON_1);
+                setCurrentLesson(1);
+                break;
+        }
+    };
+
+    const handlePreviousLesson = () => {
+        switch (currentLesson) {
+            case 3:
+                requestLessons(Lesson.LESSON_3);
+                setCurrentLesson(2);
+                break;
+            case 2:
+                requestLessons(Lesson.LESSON_1);
+                setCurrentLesson(1);
+                break;
+            case 1:
+                requestLessons(Lesson.LESSON_1);
+                setCurrentLesson(0);
+                break;
+        }
     };
 
     return (
@@ -79,7 +125,7 @@ export default function Lessons() {
             <div className="cyber-box w-full max-w-5xl min-h-[60vh] p-16 mb-8">
                 {loading ? (
                     <div className="flex items-center justify-center h-[40vh]">
-                        <div className="text-xl text-gray-400">Loading lesson content...</div>
+                        <div className="text-xl text-gray-400">crafting your mission… Get ready to explore!</div>
                     </div>
                 ) : (
                     <>
@@ -96,7 +142,7 @@ export default function Lessons() {
             {/* Navigation Buttons */}
             <div className="flex justify-between w-full max-w-5xl">
                 <button
-                    onClick={() => setCurrentLesson(prev => Math.max(0, prev - 1))}
+                    onClick={handlePreviousLesson}
                     className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 
             ${currentLesson === 0 ? 'opacity-50' : 'hover:opacity-90'}`}
                     disabled={currentLesson === 0}
@@ -114,14 +160,6 @@ export default function Lessons() {
                     <FaChevronRight />
                 </button>
 
-                <button
-                    onClick={() => requestLessons(Lesson.LESSON_1)}
-                    className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2
-            ${currentLesson === totalLessons - 1 ? 'opacity-50' : 'hover:opacity-90'}`}
-                >
-                    Start Lesson
-                    <FaChevronRight />
-                </button>
             </div>
         </div>
     );
