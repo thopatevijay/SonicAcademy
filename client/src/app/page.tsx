@@ -3,8 +3,25 @@
 import { useState } from 'react';
 import { FaRocket, FaLightbulb, FaRobot, FaChevronRight, FaTimes } from 'react-icons/fa';
 
+
+type UserData = {
+  ageGroup: string;
+  learningStyle: string;
+  experienceLevel: string;
+}
+
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userData, setUserData] = useState<UserData>({
+    ageGroup: '',
+    learningStyle: '',
+    experienceLevel: ''
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserData({ ...userData, [name]: value });
+  };
 
   const features = [
     {
@@ -24,7 +41,7 @@ export default function Home() {
     },
   ];
 
-  const handleOpenModal = (e) => {
+  const handleOpenModal = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setIsModalOpen(true);
   };
@@ -33,10 +50,9 @@ export default function Home() {
     setIsModalOpen(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Process form data here
-    setIsModalOpen(false);
+    localStorage.setItem('userData', JSON.stringify(userData));
     // Navigate to lessons page
     window.location.href = '/lessons';
   };
@@ -93,21 +109,21 @@ export default function Home() {
             background: "rgba(20, 21, 32, 0.85)"
           }}>
             {/* Close button */}
-            <button 
+            <button
               onClick={handleCloseModal}
               className="absolute right-4 top-4 text-gray-400 hover:text-white z-10"
             >
               <FaTimes size={20} />
             </button>
-            
+
             {/* Background grid effect */}
             <div className="absolute inset-0 bg-grid opacity-20"></div>
-            
+
             {/* Header */}
             <div className="border-b border-[rgba(var(--neon-primary),0.3)] px-6 py-4">
               <h2 className="text-xl font-bold neon-text text-center tracking-wide">Prepare for Launch: Tell Us About Your Mission</h2>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               {/* Age Group */}
               <div>
@@ -120,22 +136,23 @@ export default function Home() {
                     "Master Navigators (36+)"
                   ].map((option) => (
                     <label key={option} className="flex items-center cyber-box p-2 hover:border-[rgba(var(--neon-primary),0.7)] cursor-pointer transition-all">
-                      <input 
-                        type="radio" 
-                        name="ageGroup" 
-                        value={option} 
-                        className="mr-3 accent-[rgb(var(--neon-primary))]" 
-                        required 
+                      <input
+                        type="radio"
+                        name="ageGroup"
+                        value={option}
+                        className="mr-3 accent-[rgb(var(--neon-primary))]"
+                        required
+                        onChange={handleChange}
                       />
                       <span>{option}</span>
                     </label>
                   ))}
                 </div>
               </div>
-              
+
               {/* Learning Style */}
               <div>
-                <label className="block font-medium neon-text mb-3 text-base">What's your learning superpower?</label>
+                <label className="block font-medium neon-text mb-3 text-base">What&apos;s your learning superpower?</label>
                 <div className="space-y-2">
                   {[
                     { label: "I see it to believe it (Visual) (coming soon)", disabled: true },
@@ -143,24 +160,25 @@ export default function Home() {
                     { label: "I learn by doing (Kinesthetic) (coming soon)", disabled: true },
                     { label: "I read and write my way to knowledge (Reading/Writing)", disabled: false }
                   ].map((option) => (
-                    <label 
-                      key={option.label} 
+                    <label
+                      key={option.label}
                       className={`flex items-center cyber-box p-2 ${option.disabled ? 'opacity-50 cursor-not-allowed' : 'hover:border-[rgba(var(--neon-primary),0.7)] cursor-pointer'} transition-all`}
                     >
-                      <input 
-                        type="radio" 
-                        name="learningStyle" 
+                      <input
+                        type="radio"
+                        name="learningStyle"
                         value={option.label}
-                        disabled={option.disabled} 
+                        disabled={option.disabled}
                         className="mr-3 accent-[rgb(var(--neon-primary))]"
                         required={!option.disabled}
+                        onChange={handleChange}
                       />
                       <span>{option.label}</span>
                     </label>
                   ))}
                 </div>
               </div>
-              
+
               {/* Experience Level */}
               <div>
                 <label className="block font-medium neon-text mb-3 text-base">How familiar are you with the Sonic universe?</label>
@@ -171,19 +189,20 @@ export default function Home() {
                     "I'm a seasoned space captain (Advanced)"
                   ].map((option) => (
                     <label key={option} className="flex items-center cyber-box p-2 hover:border-[rgba(var(--neon-primary),0.7)] cursor-pointer transition-all">
-                      <input 
-                        type="radio" 
-                        name="experienceLevel" 
-                        value={option} 
-                        className="mr-3 accent-[rgb(var(--neon-primary))]" 
-                        required 
+                      <input
+                        type="radio"
+                        name="experienceLevel"
+                        value={option}
+                        className="mr-3 accent-[rgb(var(--neon-primary))]"
+                        required
+                        onChange={handleChange}
                       />
                       <span>{option}</span>
                     </label>
                   ))}
                 </div>
               </div>
-              
+
               {/* Submit Button */}
               <div className="pt-2">
                 <button
