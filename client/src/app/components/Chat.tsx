@@ -16,7 +16,9 @@ export default function Chat() {
     setLoading(true);
 
     try {
-       headers: {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -24,9 +26,7 @@ export default function Chat() {
           agentId: '7accb91f-3953-0421-9a2a-6eb46708451e', // Replace with your agent ID if different
         }),
       });
- const response = await fetch('/api/chat', {
-        method: 'POST',
-      
+
       const data = await response.json();
       
       // Add agent responses to chat
