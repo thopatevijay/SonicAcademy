@@ -47,7 +47,7 @@ export default function Sidebar() {
                     : 'hover:bg-[rgba(var(--neon-primary),0.1)]'
                 }`}
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon/>
                 {item.name}
               </Link>
             </li>
@@ -61,7 +61,7 @@ export default function Sidebar() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[rgba(var(--neon-secondary),0.2)] 
                         border border-[rgba(var(--neon-secondary),0.3)] flex items-center justify-center">
-            <FaTrophy className="text-[rgb(var(--neon-secondary))]" />
+            <FaTrophy/>
           </div>
           <div>
             <p className="text-sm font-medium">First Step</p>

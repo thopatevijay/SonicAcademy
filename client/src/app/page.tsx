@@ -42,7 +42,7 @@ export default function Home() {
               className="cyber-box p-6 flex flex-col items-center h-full max-w-sm w-full"
             >
               <div className="w-12 h-12 rounded-full flex items-center justify-center bg-[rgba(var(--neon-primary),0.1)] border border-[rgba(var(--neon-primary),0.3)] mb-4">
-                <feature.icon className="w-6 h-6 text-[rgb(var(--neon-primary))]" />
+                <feature.icon />
               </div>
               <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
               <p className="text-gray-400 text-sm text-center">
@@ -60,7 +60,7 @@ export default function Home() {
           className="neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2"
         >
           Begin Your Adventure
-          <FaChevronRight className="w-3 h-3" />
+          <FaChevronRight />
         </Link>
       </div>
     </div>
