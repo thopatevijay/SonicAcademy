@@ -3,104 +3,95 @@ import { useState, useCallback, useEffect } from 'react';
 import { FaChevronRight } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 
-enum Lesson {
+export enum Lesson {
     LESSON_1 = "Lesson 1",
     LESSON_2 = "Lesson 2",
     LESSON_3 = "Lesson 3",
 }
 
-const parseLesson = (xmlString: string) => {
-    // Remove markdown code block markers and clean up the string
-    const cleanXml = xmlString.replace(/```/g, '').trim();
+export const TOTAL_LESSONS = Object.keys(Lesson).length;
 
+// Types
+interface LessonData {
+    title: string;
+    content: string;
+}
+
+interface UserData {
+    ageGroup: string;
+    learningStyle: string;
+    experienceLevel: string;
+}
+
+const parseLesson = (xmlString: string): LessonData => {
+    const cleanXml = xmlString.replace(/```/g, '').trim();
     const titleMatch = cleanXml.match(/<lesson_title>(.*?)<\/lesson_title>/s);
     const contentMatch = cleanXml.match(/<lesson_content>(.*?)<\/lesson_content>/s);
 
     return {
-        title: titleMatch ? titleMatch[1].trim() : '',
-        content: contentMatch ? contentMatch[1].trim() : ''
+        title: titleMatch?.[1]?.trim() ?? '',
+        content: contentMatch?.[1]?.trim() ?? ''
     };
 };
 
 export default function Lessons() {
     const router = useRouter();
     const [currentLesson, setCurrentLesson] = useState(0);
-    const [lessonData, setLessonData] = useState<{ title: string; content: string }>({ title: '', content: '' });
+    const [lessonData, setLessonData] = useState<LessonData>({ title: '', content: '' });
     const [loading, setLoading] = useState(false);
 
-    const totalLessons = 1;
-
-    const userData = JSON.parse(localStorage?.getItem('userData') || '{}');
+    const userData: UserData = JSON.parse(localStorage?.getItem('userData') ?? '{}');
 
     const requestLessons = useCallback(async (lesson: Lesson) => {
         try {
             setLoading(true);
             const response = await fetch('/api/chat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: `I am a ${userData.ageGroup} ${userData.learningStyle} ${userData.experienceLevel}, "Start ${lesson}"`,
                     agentId: '7accb91f-3953-0421-9a2a-6eb46708451e',
                 }),
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch lesson');
+            }
+
             const data = await response.json();
-            const parsedLesson = parseLesson(data[0].text);
-            setLessonData(parsedLesson);
-            setLoading(false);
+            setLessonData(parseLesson(data[0].text));
         } catch (error) {
             console.error('Error requesting lessons:', error);
+            // Handle error state here
+        } finally {
+            setLoading(false);
         }
-    }, [userData.ageGroup, userData.learningStyle, userData.experienceLevel]);
+    }, [userData]);
 
     useEffect(() => {
-        if (!userData) {
+        if (!userData.ageGroup) {
             router.push('/');
+            return;
         }
+
         if (currentLesson === 0) {
             requestLessons(Lesson.LESSON_1);
             setCurrentLesson(1);
         }
-    }, [requestLessons, currentLesson, userData, router]);
+    }, [currentLesson, userData, router, requestLessons]);
 
-    // To enable circular navigation:
-    const handleNextLesson = () => {
-        switch (currentLesson) {
-            case 0:
-                requestLessons(Lesson.LESSON_1);
-                setCurrentLesson(1);
-                break;
-            case 1:
-                requestLessons(Lesson.LESSON_2);
-                setCurrentLesson(2);
-                break;
-            case 2:
-                requestLessons(Lesson.LESSON_3);
-                setCurrentLesson(3);
-                break;
-            case 3:
-                requestLessons(Lesson.LESSON_1);
-                setCurrentLesson(1);
-                break;
+    const handleLessonNavigation = (direction: 'next' | 'previous') => {
+        if (currentLesson === TOTAL_LESSONS && direction === 'next') {
+            router.push('/aibuilder');
+            return;
         }
-    };
 
-    const handlePreviousLesson = () => {
-        switch (currentLesson) {
-            case 3:
-                requestLessons(Lesson.LESSON_3);
-                setCurrentLesson(2);
-                break;
-            case 2:
-                requestLessons(Lesson.LESSON_1);
-                setCurrentLesson(1);
-                break;
-            case 1:
-                requestLessons(Lesson.LESSON_1);
-                setCurrentLesson(0);
-                break;
-        }
+        const nextLesson = direction === 'next'
+            ? (currentLesson % TOTAL_LESSONS) + 1
+            : ((currentLesson - 2 + TOTAL_LESSONS) % TOTAL_LESSONS) + 1;
+
+        requestLessons(Lesson[`LESSON_${nextLesson}` as keyof typeof Lesson]);
+        setCurrentLesson(nextLesson);
     };
 
     return (
@@ -110,13 +101,13 @@ export default function Lessons() {
                 <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-gray-400">Progress</span>
                     <span className="text-sm text-gray-400">
-                        {currentLesson + 1}/{totalLessons} Lessons
+                        {currentLesson}/{TOTAL_LESSONS} Lessons
                     </span>
                 </div>
                 <div className="progress-bar">
                     <div
                         className="progress-bar-fill h-2 transition-all duration-300"
-                        style={{ width: `${((currentLesson + 1) / totalLessons) * 100}%` }}
+                        style={{ width: `${((currentLesson) / TOTAL_LESSONS) * 100}%` }}
                     />
                 </div>
             </div>
@@ -142,7 +133,7 @@ export default function Lessons() {
             {/* Navigation Buttons */}
             <div className="flex justify-between w-full max-w-5xl">
                 <button
-                    onClick={handlePreviousLesson}
+                    onClick={() => handleLessonNavigation('previous')}
                     className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 
             ${currentLesson === 0 ? 'opacity-50' : 'hover:opacity-90'}`}
                     disabled={currentLesson === 0}
@@ -151,15 +142,13 @@ export default function Lessons() {
                 </button>
 
                 <button
-                    onClick={handleNextLesson}
+                    onClick={() => handleLessonNavigation('next')}
                     className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2
-            ${currentLesson === totalLessons - 1 ? 'opacity-50' : 'hover:opacity-90'}`}
-                    disabled={currentLesson === totalLessons - 1}
+            ${currentLesson === TOTAL_LESSONS ? 'opacity-50' : 'hover:opacity-90'}`}
                 >
-                    Next Lesson
+                    {currentLesson === TOTAL_LESSONS ? 'Go to AI Builder' : 'Next Lesson'}
                     <FaChevronRight />
                 </button>
-
             </div>
         </div>
     );

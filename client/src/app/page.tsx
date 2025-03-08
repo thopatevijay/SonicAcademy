@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { FaRocket, FaLightbulb, FaRobot, FaChevronRight, FaTimes } from 'react-icons/fa';
-
+import { useRouter } from 'next/navigation';
 
 type UserData = {
   ageGroup: string;
@@ -11,6 +11,7 @@ type UserData = {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     ageGroup: '',
@@ -54,7 +55,7 @@ export default function Home() {
     e.preventDefault();
     localStorage.setItem('userData', JSON.stringify(userData));
     // Navigate to lessons page
-    window.location.href = '/lessons';
+    router.push('/lessons');
   };
 
   return (
