@@ -21,7 +21,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-[calc(100vh-2rem)] py-10 px-4">
+    <div className="flex flex-col items-center justify-start min-h-[calc(100vh-2rem)] py-10 px-4 mt-[50px]">
       {/* Hero Section */}
       <div className="max-w-4xl w-full mx-auto text-center mb-16 mt-8">
         <h1 className="text-5xl font-bold mb-4 neon-text tracking-tight">
@@ -34,7 +34,7 @@ export default function Home() {
       </div>
 
       {/* Feature Cards */}
-      <div className="max-w-4xl w-full mx-auto">
+      <div className="max-w-[500px] w-full mx-auto mt-[100px]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 place-items-center">
           {features.map((feature, idx) => (
             <div

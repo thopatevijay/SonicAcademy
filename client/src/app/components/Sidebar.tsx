@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FaHome, FaGraduationCap, FaRobot, FaTrophy } from 'react-icons/fa';
+import { FaHome, FaGraduationCap, FaRobot } from 'react-icons/fa';
 
 const navItems = [
   { name: 'Home', path: '/', icon: FaHome },
@@ -14,7 +14,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 h-screen bg-[rgb(var(--surface-darker))] p-5 border-r border-[rgba(var(--neon-primary),0.1)] flex flex-col">
+    <aside className="w-84 h-screen bg-[rgb(var(--surface-darker))] p-5 border-r border-[rgba(var(--neon-primary),0.1)] flex flex-col">
       <div className="mb-6">
         <h1 className="text-2xl font-bold neon-text">Sonic Academy</h1>
       </div>
@@ -55,8 +55,7 @@ export default function Sidebar() {
         </ul>
       </nav>
       
-      {/* Achievement Badge */}
-      <div className="mt-4 p-4 cyber-box">
+      {/* <div className="mt-4 p-4 cyber-box">
         <h3 className="text-sm text-gray-400 mb-2">Latest Achievement</h3>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[rgba(var(--neon-secondary),0.2)] 
@@ -68,7 +67,7 @@ export default function Sidebar() {
             <p className="text-xs text-gray-500">Started your journey</p>
           </div>
         </div>
-      </div>
+      </div> */}
     </aside>
   );
 }

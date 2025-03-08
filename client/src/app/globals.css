@@ -194,3 +194,31 @@ body {
   line-height: 1.6;
   color: rgba(var(--foreground-rgb), 0.8);
 }
+
+.prose {
+  color: rgba(var(--foreground-rgb), 0.9);
+  max-width: none;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: rgb(var(--neon-primary));
+  text-shadow: 0 0 10px rgba(var(--neon-primary), 0.3);
+}
+
+.prose a {
+  color: rgb(var(--neon-secondary));
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.prose a:hover {
+  color: rgb(var(--neon-primary));
+  text-shadow: 0 0 5px rgba(var(--neon-primary), 0.5);
+}
+
+.prose code {
+  background: rgba(var(--surface-darker), 0.5);
+  padding: 0.2em 0.4em;
+  border-radius: 0.3em;
+  font-family: var(--font-geist-mono);
+}
