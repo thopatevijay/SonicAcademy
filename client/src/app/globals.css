@@ -2,16 +2,107 @@
 @tailwind utilities;
 
 :root {
+  /* Base colors */
   --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 10, 10, 18;
+  --background-start-rgb: 13, 14, 24;
+  --background-end-rgb: 16, 17, 27;
+  
+  /* Neon accent colors */
+  --neon-primary: 56, 217, 169;  /* mint */
+  --neon-secondary: 88, 156, 255; /* blue */
+  --neon-accent: 255, 88, 182;   /* pink */
+  
+  /* UI colors */
+  --surface-dark: 20, 21, 32;
+  --surface-darker: 16, 17, 27;
+  --border-glow: 56, 217, 169, 0.15;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-    to bottom,
+    135deg,
     rgb(var(--background-start-rgb)),
     rgb(var(--background-end-rgb))
   );
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Cyberpunk-style container */
+.cyber-box {
+  background: rgb(var(--surface-dark));
+  border: 1px solid rgba(var(--neon-primary), 0.3);
+  box-shadow: 0 0 20px rgba(var(--border-glow));
+  border-radius: 0.5rem;
+}
+
+/* Neon text effect */
+.neon-text {
+  color: rgb(var(--neon-primary));
+  text-shadow: 0 0 10px rgba(var(--neon-primary), 0.5);
+}
+
+/* Glowing button */
+.neon-button {
+  background: rgba(var(--neon-primary), 0.1);
+  border: 1px solid rgb(var(--neon-primary));
+  color: rgb(var(--neon-primary));
+  text-shadow: 0 0 5px rgba(var(--neon-primary), 0.5);
+  box-shadow: 0 0 15px rgba(var(--neon-primary), 0.3);
+  transition: all 0.3s ease;
+}
+
+.neon-button:hover {
+  background: rgb(var(--neon-primary));
+  color: rgb(var(--surface-darker));
+  box-shadow: 0 0 20px rgba(var(--neon-primary), 0.5);
+}
+
+/* Progress bar styling */
+.progress-bar {
+  background: rgba(var(--neon-primary), 0.1);
+  border: 1px solid rgba(var(--neon-primary), 0.3);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--neon-primary)),
+    rgb(var(--neon-secondary))
+  );
+  box-shadow: 0 0 10px rgba(var(--neon-primary), 0.5);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--surface-darker));
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--neon-primary), 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--neon-primary), 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cyber-box {
+    padding: 1rem;
+  }
+  
+  .neon-button {
+    padding: 0.75rem 1.5rem;
+  }
 }
