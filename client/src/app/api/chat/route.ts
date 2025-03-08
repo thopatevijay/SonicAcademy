@@ -1,22 +1,42 @@
 import { NextResponse } from 'next/server';
 
+type Agent = {
+    id: string;
+    name: string;
+    clients: string[];
+}
+
 export async function POST(request: Request) {
     try {
-        const body = await request.json();
-        const payload = {
-            text: body.message,
-        };
-
         const API_URL = process.env.API_URL;
         if (!API_URL) {
             throw new Error('API_URL is not set');
         }
 
+        // Fetch agents first
+        const agentsResponse = await fetch(`${API_URL}/agents`);
+        if (!agentsResponse.ok) {
+            throw new Error(`Failed to fetch agents: ${agentsResponse.status}`);
+        }
+        
+        const agentsData = await agentsResponse.json();
+        const sonicTutor = agentsData.agents.find((agent: Agent) => agent.name === "SonicTutor");
+        
+        if (!sonicTutor) {
+            throw new Error('SonicTutor agent not found');
+        }
+
+        console.log(sonicTutor);
+        const body = await request.json();
+        const payload = {
+            text: body.message,
+        };
+
         // Add timeout and proper error handling for fetch
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-        const response = await fetch(`${API_URL}/${body.agentId}/message`, {
+        const response = await fetch(`${API_URL}/${sonicTutor.id}/message`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

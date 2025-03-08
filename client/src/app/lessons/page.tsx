@@ -54,7 +54,6 @@ export default function Lessons() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: `I am a ${userData.ageGroup} ${userData.learningStyle} ${userData.experienceLevel}, "Start ${lesson}"`,
-                    agentId: '7accb91f-3953-0421-9a2a-6eb46708451e',
                 }),
             });
 
