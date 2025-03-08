@@ -23,7 +23,7 @@ export default function Chat() {
         },
         body: JSON.stringify({
           message,
-          agentId: '7accb91f-3953-0421-9a2a-6eb46708451e', // Replace with your agent ID if different
+          agentId: 'b850bc30-45f8-0041-a00a-83df46d8555d', // Replace with your agent ID if different
         }),
       });
 
