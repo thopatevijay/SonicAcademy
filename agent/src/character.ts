@@ -1,8 +1,8 @@
 import { Character, Clients, ModelProviderName } from "@elizaos/core";
 
 export const character: Character = {
-    // Basic Info
     name: "SonicTutor",
+    username: "sonictutor",
     clients: [Clients.DIRECT], // Direct client for now; expand later if needed
     modelProvider: ModelProviderName.GOOGLE, // Keep Google as the model provider
     settings: {
