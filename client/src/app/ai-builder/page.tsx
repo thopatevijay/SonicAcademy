@@ -27,7 +27,6 @@ export default function AIBuilder() {
         const fetchAgents = async () => {
             const response = await fetch("/api/get-agents");
             const data = await response.json();
-            console.log(data);
             setAgents(data.agents);
         }
         fetchAgents();
