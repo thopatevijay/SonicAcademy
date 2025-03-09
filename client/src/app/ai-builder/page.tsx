@@ -2,6 +2,8 @@
 import { elizaCharacter } from '../constant';
 import { useState } from 'react';
 import { FaRobot, FaPlus, FaPaperPlane, FaComments, FaCog } from 'react-icons/fa';
+import CreateAgentModal from '../components/CreateAgentModal';
+import EditAgentModal from '../components/EditAgentModal';
 
 export default function AIBuilder() {
     const [agents, setAgents] = useState([
@@ -10,6 +12,9 @@ export default function AIBuilder() {
     ]);
     const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
     const [message, setMessage] = useState('');
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingAgent, setEditingAgent] = useState<null | { id: number; name: string; description?: string }>(null);
 
     const createAgent = async () => {
         console.log("Creating agent...");
@@ -31,6 +36,26 @@ export default function AIBuilder() {
 
     const selectedAgent = agents.find(agent => agent.id === selectedAgentId);
 
+    const handleCreateAgent = (agentData: { name: string; description: string }) => {
+        const newAgent = {
+            id: agents.length + 1,
+            name: agentData.name,
+            description: agentData.description
+        };
+        setAgents([...agents, newAgent]);
+    };
+
+    const handleEditAgent = (agentData: { id: number; name: string; description: string }) => {
+        setAgents(agents.map(agent => 
+            agent.id === agentData.id ? { ...agent, ...agentData } : agent
+        ));
+    };
+
+    const openEditModal = (agent: { id: number; name: string; description?: string }) => {
+        setEditingAgent(agent);
+        setIsEditModalOpen(true);
+    };
+
     return (
         <div className="flex min-h-screen w-full bg-gradient-to-b from-gray-900 to-black p-8">
             {/* Container for both sidebar and chat to center them vertically */}
@@ -47,7 +72,7 @@ export default function AIBuilder() {
                             transition-all duration-300 shadow-lg hover:shadow-blue-500/50 
                             flex items-center justify-center gap-3 text-lg font-medium
                             hover:scale-[1.02] active:scale-[0.98]"
-                            onClick={createAgent}
+                            onClick={() => setIsCreateModalOpen(true)}
                         >
                             <FaPlus className="text-blue-300" />
                             Create New Agent
@@ -83,7 +108,7 @@ export default function AIBuilder() {
                                                 ? 'text-blue-400 hover:bg-blue-500/20'
                                                 : 'text-gray-400 hover:text-cyan-400 hover:bg-white/10'
                                             }`}
-                                        onClick={() => console.log('Settings clicked for:', agent.name)}
+                                        onClick={() => openEditModal(agent)}
                                     >
                                         <FaCog className="text-lg" />
                                     </button>
@@ -144,6 +169,17 @@ export default function AIBuilder() {
                     </div>
                 )}
             </div>
+            <CreateAgentModal 
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+                onSubmit={handleCreateAgent}
+            />
+            <EditAgentModal 
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSubmit={handleEditAgent}
+                agent={editingAgent}
+            />
         </div>
     );
 }
