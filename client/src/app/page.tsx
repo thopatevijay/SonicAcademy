@@ -73,18 +73,22 @@ export default function Home() {
       </div>
 
       {/* Feature Cards */}
-      <div className="max-w-[500px] w-full mx-auto mt-[100px]">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 place-items-center">
+      <div className="max-w-[1200px] w-full mx-auto mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 place-items-center text-white">
           {features.map((feature, idx) => (
             <div
               key={idx}
-              className="cyber-box p-6 flex flex-col items-center h-full max-w-sm w-full"
+              className="bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 flex flex-col items-center 
+                h-full w-full max-w-sm shadow-xl shadow-black/20 border border-white/10
+                hover:bg-gray-800/90 transition-all duration-300 hover:scale-[1.02]"
             >
-              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-[rgba(var(--neon-primary),0.1)] border border-[rgba(var(--neon-primary),0.3)] mb-4">
-                <feature.icon className="text-white" />
+              <div className="w-16 h-16 rounded-full flex items-center justify-center 
+                bg-blue-500/20 border border-blue-500/30 mb-6 
+                shadow-lg shadow-blue-500/20">
+                <feature.icon className="text-blue-400 text-2xl" />
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-white">{feature.title}</h3>
-              <p className="text-gray-400 text-sm text-center">
+              <h3 className="text-xl font-semibold mb-4 text-white">{feature.title}</h3>
+              <p className="text-gray-300 text-base text-center leading-relaxed">
                 {feature.description}
               </p>
             </div>
