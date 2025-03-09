@@ -2,21 +2,22 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FaHome, FaGraduationCap, FaRobot } from 'react-icons/fa';
+import { Home, GraduationCap, Bot } from 'lucide-react';
+import { cn } from '../utils/utils';
 
 const navItems = [
-  { name: 'Home', path: '/', icon: FaHome },
-  { name: 'Lessons', path: '/lessons', icon: FaGraduationCap },
-  { name: 'AI Builder', path: '/ai-builder', icon: FaRobot },
+  { name: 'Home', path: '/', icon: Home },
+  { name: 'Lessons', path: '/lessons', icon: GraduationCap },
+  { name: 'AI Builder', path: '/ai-builder', icon: Bot },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-84 h-screen bg-[rgb(var(--surface-darker))] p-5 border-r border-[rgba(var(--neon-primary),0.1)] flex flex-col">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold neon-text">Sonic Academy</h1>
+    <aside className="group w-84 border-r bg-background px-4 py-6">
+      <div className="mb-6 px-2">
+        <h1 className="text-2xl font-bold text-primary">Sonic Academy</h1>
       </div>
       
       {/* User Progress Section */}
@@ -35,24 +36,22 @@ export default function Sidebar() {
         </div>
       </div> */}
       
-      <nav className="mb-auto">
-        <ul className="space-y-2">
-          {navItems.map((item) => (
-            <li key={item.path}>
-              <Link
-                href={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
-                  pathname === item.path
-                    ? 'neon-button'
-                    : 'hover:bg-[rgba(var(--neon-primary),0.1)]'
-                }`}
-              >
-                <item.icon/>
-                {item.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
+      <nav className="space-y-1">
+        {navItems.map((item) => (
+          <Link
+            key={item.path}
+            href={item.path}
+            className={cn(
+              "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground w-full cursor-pointer",
+              pathname === item.path ? 
+                "bg-primary text-primary-foreground" : 
+                "transparent"
+            )}
+          >
+            <item.icon className="h-4 w-4 shrink-0" />
+            <span className="truncate">{item.name}</span>
+          </Link>
+        ))}
       </nav>
       
       {/* <div className="mt-4 p-4 cyber-box">
