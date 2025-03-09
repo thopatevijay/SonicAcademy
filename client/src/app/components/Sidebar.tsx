@@ -15,9 +15,9 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="group w-84 border-r bg-background px-4 py-6">
+    <aside className="group w-84 border-r bg-background px-4 py-6 bg-gradient-to-b from-gray-900 to-black p-8">
       <div className="mb-6 px-2">
-        <h1 className="text-2xl font-bold text-primary">Sonic Academy</h1>
+        <h1 className="text-2xl font-bold text-white">Sonic Academy</h1>
       </div>
       
       {/* User Progress Section */}
@@ -48,8 +48,8 @@ export default function Sidebar() {
                 "transparent"
             )}
           >
-            <item.icon className="h-4 w-4 shrink-0" />
-            <span className="truncate">{item.name}</span>
+            <item.icon className="h-4 w-4 shrink-0 text-white" />
+            <span className="truncate text-white">{item.name}</span>
           </Link>
         ))}
       </nav>

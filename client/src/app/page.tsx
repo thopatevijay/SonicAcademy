@@ -59,10 +59,11 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-[calc(100vh-2rem)] py-10 px-4 mt-[50px]">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full p-8 bg-gradient-to-b from-gray-900 to-black">
+
       {/* Hero Section */}
       <div className="max-w-4xl w-full mx-auto text-center mb-16 mt-8">
-        <h1 className="text-5xl font-bold mb-4 neon-text tracking-tight">
+        <h1 className="text-5xl font-bold mb-4 neon-text tracking-tight text-white">
           Welcome to Sonic Agent Academy
         </h1>
         <p className="text-lg mb-0 max-w-2xl mx-auto text-gray-400 leading-relaxed">
@@ -80,9 +81,9 @@ export default function Home() {
               className="cyber-box p-6 flex flex-col items-center h-full max-w-sm w-full"
             >
               <div className="w-12 h-12 rounded-full flex items-center justify-center bg-[rgba(var(--neon-primary),0.1)] border border-[rgba(var(--neon-primary),0.3)] mb-4">
-                <feature.icon />
+                <feature.icon className="text-white" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+              <h3 className="text-lg font-semibold mb-2 text-white">{feature.title}</h3>
               <p className="text-gray-400 text-sm text-center">
                 {feature.description}
               </p>
@@ -95,7 +96,7 @@ export default function Home() {
       <div className="text-center">
         <a
           onClick={() => setIsOnBoardingModalOpen(true)}
-          className="neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2"
+          className="neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 text-white"
         >
           Begin Your Adventure
           <FaChevronRight />

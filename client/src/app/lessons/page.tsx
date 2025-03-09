@@ -88,7 +88,7 @@ export default function Lessons() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen w-full p-8">
+        <div className="flex flex-col items-center justify-center min-h-screen w-full p-8 bg-gradient-to-b from-gray-900 to-black">
             {/* Progress Bar */}
             <div className="w-full max-w-5xl mb-8">
                 <div className="flex justify-between items-center mb-2">
@@ -109,14 +109,14 @@ export default function Lessons() {
             <div className="cyber-box w-full max-w-5xl min-h-[60vh] p-16 mb-8">
                 {loading ? (
                     <div className="flex items-center justify-center h-[40vh]">
-                        <div className="text-xl text-gray-400">Crafting your mission… Get ready to explore!</div>
+                        <div className="text-xl text-white">Crafting your mission… Get ready to explore!</div>
                     </div>
                 ) : (
                     <>
-                        <h1 className="text-3xl font-bold mb-8 neon-text">
+                        <h1 className="text-3xl font-bold mb-8 neon-text text-white">
                             {lessonData.title}
                         </h1>
-                        <div className="prose prose-invert whitespace-pre-line">
+                        <div className="prose prose-invert whitespace-pre-line text-white">
                             {lessonData.content}
                         </div>
                     </>
@@ -127,7 +127,7 @@ export default function Lessons() {
             <div className="flex justify-between w-full max-w-5xl">
                 <button
                     onClick={() => handleLessonNavigation('previous')}
-                    className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 
+                    className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 text-white
             ${(currentLesson <= 1 || loading) ? 'opacity-50' : 'hover:opacity-90'}`}
                     disabled={currentLesson <= 1 || loading}
                 >
@@ -136,7 +136,7 @@ export default function Lessons() {
 
                 <button
                     onClick={() => handleLessonNavigation('next')}
-                    className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2
+                    className={`neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 text-white
             ${(loading) ? 'opacity-50' : 'hover:opacity-90'}`}
                     disabled={loading}
                 >
