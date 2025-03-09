@@ -26,7 +26,7 @@ export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAg
         onSubmit({ name, secrets: secrets.reduce((obj, { key, value }) => ({ ...obj, [key]: value }), {}) });
         setName('');
         setSecrets([{ key: '', value: '', visible: false }]);
-        // onClose();
+        onClose();
     };
 
     const handleSecretChange = (index: number, field: string, value: string) => {
