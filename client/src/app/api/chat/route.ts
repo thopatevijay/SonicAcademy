@@ -8,13 +8,13 @@ type Agent = {
 
 export async function POST(request: Request) {
     try {
-        const API_URL = process.env.API_URL;
-        if (!API_URL) {
-            throw new Error('API_URL is not set');
+        const NEXT_PUBLIC_CREATE_LESSON_URL = process.env.NEXT_PUBLIC_CREATE_LESSON_URL;
+        if (!NEXT_PUBLIC_CREATE_LESSON_URL) {
+            throw new Error('NEXT_PUBLIC_CREATE_LESSON_URL is not set');
         }
 
         // Fetch agents first
-        const agentsResponse = await fetch(`${API_URL}/agents`);
+        const agentsResponse = await fetch(`${NEXT_PUBLIC_CREATE_LESSON_URL}/agents`);
         if (!agentsResponse.ok) {
             throw new Error(`Failed to fetch agents: ${agentsResponse.status}`);
         }
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-        const response = await fetch(`${API_URL}/${sonicTutor.id}/message`, {
+        const response = await fetch(`${NEXT_PUBLIC_CREATE_LESSON_URL}/${sonicTutor.id}/message`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
