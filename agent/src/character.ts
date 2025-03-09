@@ -9,7 +9,7 @@ export const character: Character = {
         voice: {
             model: "en_US-female-medium" // Changed to a friendly female voice for a teacher vibe
         },
-        ragKnowledge: true, // Enable RAG for Sonic docs integration
+        // ragKnowledge: true, // Enable RAG for Sonic docs integration
     },
 
     // Plugins
@@ -57,7 +57,7 @@ Response Format:
         "Introduction to DeFAI on Sonic",
         "Sonic network architecture",
 
-        { directory: "/{SonicTutor}" } as any // RAG-enabled Sonic docs for dynamic lessons
+        // { directory: "/{SonicTutor}" } as any // RAG-enabled Sonic docs for dynamic lessons
     ],
 
     // Message Examples
