@@ -6,15 +6,12 @@ export enum Lesson {
 
 export const TOTAL_LESSONS = Object.keys(Lesson).length;
 
-export const elizaCharacter = {
-    "name": "Eliza",
+export const SONIC_CHARACTER = {
+    "name": "",
     "plugins": [],
     "clients": [],
     "modelProvider": "google",
     "settings": {
-        "secrets": {
-            GOOGLE_GENERATIVE_AI_API_KEY: "AIzaSyBz22s_f1kJHKZC9XPJwp1vWdTYOofNkLI"
-        },
         "voice": {
             "model": "en_US-hfc_female-medium"
         }

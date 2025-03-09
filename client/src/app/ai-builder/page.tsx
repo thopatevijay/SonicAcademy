@@ -1,52 +1,67 @@
 'use client';
-// import { elizaCharacter } from '../constant';
+import { SONIC_CHARACTER } from '../constant';
 import { useState } from 'react';
 import { FaRobot, FaPlus, FaPaperPlane, FaComments, FaCog } from 'react-icons/fa';
 import CreateAgentModal from '../components/CreateAgentModal';
 import EditAgentModal from '../components/EditAgentModal';
+import { toast } from "sonner"
 
 export default function AIBuilder() {
-    const [agents, setAgents] = useState([
-        { id: 1, name: 'Agent A' },
-        { id: 2, name: 'Agent B' }
-    ]);
+    const [agents, setAgents] = useState<{ id: number; name: string; secrets: Record<string, unknown>[] }[]>([]);
     const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
     const [message, setMessage] = useState('');
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingAgent, setEditingAgent] = useState<null | { id: number; name: string; description?: string }>(null);
 
-    // const createAgent = async () => {
-    //     console.log("Creating agent...");
+    const createAgent = async (agentData: { name: string; secrets: Record<string, unknown>[] }) => {
+        toast.info("Creating agent...")
+        const data = {
+            userId: "123",
+            agentName: agentData.name,
+            secrets: agentData.secrets,
+            characterJson: SONIC_CHARACTER
+        }
+        try {
+            const response = await fetch("/api/create-agent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
 
-    //     try {
-    //         const response = await fetch('/api/create-agent', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({ characterJson: elizaCharacter }),
-    //         });
-    //         const data = await response.json();
-    //         console.log("Agent created:", data);
-    //     } catch (error) {
-    //         console.error("Error creating agent:", error);
-    //     }
-    // };
+            const res = await response.json();
+            if (res.success) {
+                toast.success("Agent created successfully")
+                console.log("Agent created with ID:", res.agentId);
+                return true;
+            } else {
+                toast.error("Error creating agent")
+                console.error("Error:", res.error);
+                return false;
+            }
+        } catch (error) {
+            toast.error("Error creating agent")
+            console.error("Error:", error);
+            return false;
+        }
+    }
 
     const selectedAgent = agents.find(agent => agent.id === selectedAgentId);
 
-    const handleCreateAgent = (agentData: { name: string; description: string }) => {
-        const newAgent = {
-            id: agents.length + 1,
-            name: agentData.name,
-            description: agentData.description
-        };
-        setAgents([...agents, newAgent]);
+    const handleCreateAgent = async (agentData: { name: string; secrets: Record<string, unknown>[] }) => {
+        const isSuccess = await createAgent(agentData);
+        if (isSuccess) {
+            const newAgent = {
+                id: agents.length + 1,
+                name: agentData.name,
+                secrets: agentData.secrets
+            };
+            setAgents([...agents, newAgent]);
+        }
     };
 
     const handleEditAgent = (agentData: { id: number; name: string; description: string }) => {
-        setAgents(agents.map(agent => 
+        setAgents(agents.map(agent =>
             agent.id === agentData.id ? { ...agent, ...agentData } : agent
         ));
     };
@@ -169,12 +184,12 @@ export default function AIBuilder() {
                     </div>
                 )}
             </div>
-            <CreateAgentModal 
+            <CreateAgentModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
                 onSubmit={handleCreateAgent}
             />
-            <EditAgentModal 
+            <EditAgentModal
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
                 onSubmit={handleEditAgent}
