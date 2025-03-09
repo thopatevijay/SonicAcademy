@@ -1,6 +1,6 @@
 'use client';
 import { SONIC_CHARACTER } from '../constant';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaRobot, FaPlus, FaCog } from 'react-icons/fa';
 import CreateAgentModal from '../components/CreateAgentModal';
 import EditAgentModal from '../components/EditAgentModal';
@@ -8,8 +8,8 @@ import { toast } from "sonner"
 import Chat from '../components/Chat';
 
 interface Agent {
-    id: string;
-    name: string;
+    agentId: string;
+    agentName: string;
     secrets?: Record<string, unknown>[];
 }
 
@@ -23,11 +23,21 @@ export default function AIBuilder() {
     const [messages, setMessages] = useState<Array<{ text: string; isUser: boolean }>>([]);
     const [loading, setLoading] = useState(false);
 
-    const createAgent = async (agentData: { name: string; secrets: Record<string, unknown>[] }) => {
+    useEffect(() => {
+        const fetchAgents = async () => {
+            const response = await fetch("/api/get-agents");
+            const data = await response.json();
+            console.log(data);
+            setAgents(data.agents);
+        }
+        fetchAgents();
+    }, []);
+
+    const createAgent = async (agentData: { agentName: string; secrets: Record<string, unknown>[] }) => {
         toast.info("Creating agent...")
         const data = {
             userId: "123",
-            agentName: agentData.name,
+            agentName: agentData.agentName,
             secrets: agentData.secrets,
             characterJson: SONIC_CHARACTER
         }
@@ -55,22 +65,23 @@ export default function AIBuilder() {
         }
     }
 
-    const selectedAgent = agents.find(agent => agent.id === selectedAgentId);
+    const selectedAgent = agents.find(agent => agent.agentId === selectedAgentId);
 
-    const handleCreateAgent = async (agentData: { name: string; secrets: Record<string, unknown>[] }) => {
+    const handleCreateAgent = async (agentData: { agentName: string; secrets: Record<string, unknown>[] }) => {
         const agent = await createAgent(agentData);
         if (agent) {
-            const newAgent = {
-                id: agent.agentId,
-                name: agentData.name,
-            };
-            setAgents([...agents, newAgent]);
+            const fetchAgents = async () => {
+                const response = await fetch("/api/get-agents");
+                const data = await response.json();
+                setAgents(data.agents);
+            }
+            fetchAgents();
         }
     };
 
     const handleEditAgent = (agentData: Agent) => {
         setAgents(agents.map(agent =>
-            agent.id === agentData.id ? { ...agent, ...agentData } : agent
+            agent.agentId === agentData.agentId ? { ...agent, ...agentData } : agent
         ));
     };
 
@@ -146,23 +157,23 @@ export default function AIBuilder() {
                         <div className="space-y-3 overflow-y-auto max-h-[350px] pr-2">
                             {agents.map((agent) => (
                                 <div
-                                    key={agent.id}
+                                    key={agent.agentId}
                                     className={`w-full p-4 rounded-xl transition-all duration-300
-                                    flex items-center gap-3 border group ${selectedAgentId === agent.id
+                                    flex items-center gap-3 border group ${selectedAgentId === agent.agentId
                                             ? 'bg-blue-600/20 border-blue-500 text-blue-400'
                                             : 'bg-white/5 border-white/5 text-white hover:bg-white/10 hover:border-blue-500/50'
                                         }`}
                                 >
                                     <button
                                         className="flex-1 flex items-center gap-3"
-                                        onClick={() => setSelectedAgentId(agent.id)}
+                                        onClick={() => setSelectedAgentId(agent.agentId)}
                                     >
-                                        <FaRobot className={selectedAgentId === agent.id ? 'text-blue-400' : 'text-cyan-400'} />
-                                        <span className="font-medium">{agent.name}</span>
+                                        <FaRobot className={selectedAgentId === agent.agentId ? 'text-blue-400' : 'text-cyan-400'} />
+                                        <span className="font-medium">{agent.agentName}</span>
                                     </button>
                                     <button
                                         className={`p-2 rounded-lg transition-all duration-300 
-                                        ${selectedAgentId === agent.id
+                                        ${selectedAgentId === agent.agentId
                                                 ? 'text-blue-400 hover:bg-blue-500/20'
                                                 : 'text-gray-400 hover:text-cyan-400 hover:bg-white/10'
                                             }`}
@@ -179,7 +190,7 @@ export default function AIBuilder() {
                 {/* Chat Area */}
                 {selectedAgent ? (
                     <Chat
-                        name={selectedAgent.name}
+                        name={selectedAgent.agentName}
                         messages={messages}
                         sendMessage={sendMessage}
                         loading={loading}

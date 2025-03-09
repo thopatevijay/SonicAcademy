@@ -5,7 +5,7 @@ import { FaRobot, FaTimes, FaEye, FaEyeSlash, FaTrash, FaPlus } from 'react-icon
 interface CreateAgentModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (agentData: { name: string; secrets: Record<string, unknown>[] }) => void;
+    onSubmit: (agentData: { agentName: string; secrets: Record<string, unknown>[] }) => void;
 }
 
 export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAgentModalProps) {
@@ -24,7 +24,7 @@ export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAg
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onSubmit({ name, secrets: secrets.reduce((obj: any, { key, value }) => ({ ...obj, [key as string]: value }), {}) });
+        onSubmit({ agentName: name, secrets: secrets.reduce((obj: any, { key, value }) => ({ ...obj, [key as string]: value }), {}) });
         setName('');
         setSecrets([{ key: '', value: '', visible: false }]);
         onClose();
@@ -107,7 +107,6 @@ export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAg
                                     className="flex-1 bg-gray-800 border border-white/10 rounded-xl px-4 py-3
                                     text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     placeholder="Secret Key"
-                                    required
                                 />
                                 <div className="relative flex-1">
                                     <input
@@ -117,7 +116,6 @@ export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAg
                                         className="w-full bg-gray-800 border border-white/10 rounded-xl px-4 py-3
                                         text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         placeholder="Secret Value"
-                                        required
                                     />
                                     <button
                                         type="button"
