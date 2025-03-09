@@ -77,8 +77,7 @@ export default function AIBuilder() {
                             transition-all duration-300 shadow-lg hover:shadow-blue-500/50 
                             flex items-center justify-center gap-3 text-lg font-medium
                             hover:scale-[1.02] active:scale-[0.98]"
-                            // onClick={() => setIsCreateModalOpen(true)}
-                            onClick={createAgent}
+                            onClick={() => setIsCreateModalOpen(true)}
                         >
                             <FaPlus className="text-blue-300" />
                             Create New Agent
