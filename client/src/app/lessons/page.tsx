@@ -1,6 +1,6 @@
 'use client';
 import { useState, useCallback, useEffect } from 'react';
-import { FaChevronRight } from 'react-icons/fa';
+import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { Lesson, TOTAL_LESSONS } from '../constant';
 
@@ -131,6 +131,7 @@ export default function Lessons() {
             ${(currentLesson <= 1 || loading) ? 'opacity-50' : 'hover:opacity-90'}`}
                     disabled={currentLesson <= 1 || loading}
                 >
+                    <FaChevronLeft />
                     Previous Lesson
                 </button>
 

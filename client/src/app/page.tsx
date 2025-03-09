@@ -1,29 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { FaRocket, FaLightbulb, FaRobot, FaChevronRight, FaTimes } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
+import { FaRocket, FaLightbulb, FaRobot, FaChevronRight } from 'react-icons/fa';
 import OnBoardingModal from './components/OnBoardingModal';
 
-type UserData = {
-  ageGroup: string;
-  learningStyle: string;
-  experienceLevel: string;
-}
-
 export default function Home() {
-  const router = useRouter();
   const [isOnBoardingModalOpen, setIsOnBoardingModalOpen] = useState(false);
-  const [userData, setUserData] = useState<UserData>({
-    ageGroup: '',
-    learningStyle: '',
-    experienceLevel: ''
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
-  };
 
   const features = [
     {
@@ -42,21 +24,6 @@ export default function Home() {
       description: 'Get personalized guidance from AI tutors',
     },
   ];
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    localStorage.setItem('userData', JSON.stringify(userData));
-    // Navigate to lessons page
-    router.push('/lessons');
-  };
-
-  const handleOnBoardingSubmit = (agentData: { name: string; description: string }) => {
-    console.log(agentData);
-    localStorage.setItem('userData', JSON.stringify(userData));
-
-    // Navigate to lessons page
-    // router.push('/lessons');
-  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full p-8 bg-gradient-to-b from-gray-900 to-black">
@@ -112,7 +79,6 @@ export default function Home() {
       <OnBoardingModal
         isOpen={isOnBoardingModalOpen}
         onClose={() => setIsOnBoardingModalOpen(false)}
-        onSubmit={handleOnBoardingSubmit}
       />
     </div>
   );

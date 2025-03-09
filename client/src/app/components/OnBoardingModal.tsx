@@ -1,17 +1,32 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { FaRobot, FaTimes, FaRocket } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+type UserData = {
+    ageGroup: string;
+    learningStyle: string;
+    experienceLevel: string;
+}
 
 interface OnBoardingModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (agentData: { name: string; description: string }) => void;
 }
 
-export default function OnBoardingModal({ isOpen, onClose, onSubmit }: OnBoardingModalProps) {
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
+export default function OnBoardingModal({ isOpen, onClose }: OnBoardingModalProps) {
+    const router = useRouter();
     const [isAnimating, setIsAnimating] = useState(false);
+    const [userData, setUserData] = useState<UserData>({
+        ageGroup: '',
+        learningStyle: '',
+        experienceLevel: ''
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setUserData({ ...userData, [name]: value });
+    };
+
 
     useEffect(() => {
         if (isOpen) {
@@ -23,9 +38,11 @@ export default function OnBoardingModal({ isOpen, onClose, onSubmit }: OnBoardin
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ name, description });
-        setName('');
-        setDescription('');
+        // onSubmit({ name: userData.ageGroup, description: userData.learningStyle, experienceLevel: userData.experienceLevel });
+        console.log("UserData", userData)
+        localStorage.setItem('userData', JSON.stringify(userData));
+        // Navigate to lessons page
+        router.push('/lessons');
         onClose();
     };
 
@@ -70,19 +87,48 @@ export default function OnBoardingModal({ isOpen, onClose, onSubmit }: OnBoardin
                         <label className="block text-white mb-3">Which crew are you joining?</label>
                         <div className="space-y-2">
                             <label className="flex items-center space-x-3">
-                                <input type="radio" name="ageGroup" value="Young Explorers" className="text-blue-500" required />
+                                <input
+                                    type="radio"
+                                    name="ageGroup"
+                                    value="Young Explorers (Under 18)"
+                                    className="text-blue-500"
+                                    required
+                                    checked={userData.ageGroup === "Young Explorers (Under 18)"}
+                                    onChange={handleChange}
+                                />
                                 <span className="text-white">Young Explorers (Under 18)</span>
                             </label>
                             <label className="flex items-center space-x-3">
-                                <input type="radio" name="ageGroup" value="Rising Stars" className="text-blue-500" />
+                                <input
+                                    type="radio"
+                                    name="ageGroup"
+                                    value="Rising Stars (18-25)"
+                                    className="text-blue-500"
+                                    checked={userData.ageGroup === "Rising Stars (18-25)"}
+                                    onChange={handleChange}
+                                />
                                 <span className="text-white">Rising Stars (18-25)</span>
                             </label>
                             <label className="flex items-center space-x-3">
-                                <input type="radio" name="ageGroup" value="Seasoned Voyagers" className="text-blue-500" />
+                                <input
+                                    type="radio"
+                                    name="ageGroup"
+                                    value="Seasoned Voyagers (26-35)"
+                                    className="text-blue-500"
+                                    checked={userData.ageGroup === "Seasoned Voyagers (26-35)"}
+                                    onChange={handleChange}
+                                />
                                 <span className="text-white">Seasoned Voyagers (26-35)</span>
                             </label>
                             <label className="flex items-center space-x-3">
-                                <input type="radio" name="ageGroup" value="Master Navigators" className="text-blue-500" />
+                                <input
+                                    type="radio"
+                                    name="ageGroup"
+                                    value="Master Navigators (36+)"
+                                    className="text-blue-500"
+                                    checked={userData.ageGroup === "Master Navigators (36+)"}
+                                    onChange={handleChange}
+                                />
                                 <span className="text-white">Master Navigators (36+)</span>
                             </label>
                         </div>
@@ -92,19 +138,45 @@ export default function OnBoardingModal({ isOpen, onClose, onSubmit }: OnBoardin
                         <label className="block text-white mb-3">What&apos;s your learning superpower?</label>
                         <div className="space-y-2">
                             <label className="flex items-center space-x-3 opacity-50">
-                                <input type="radio" name="learningStyle" value="Visual" className="text-blue-500" disabled />
+                                <input
+                                    type="radio"
+                                    name="learningStyle"
+                                    value="I see it to believe it (Visual) (coming soon)"
+                                    className="text-blue-500"
+                                    disabled
+                                />
                                 <span className="text-white">I see it to believe it (Visual) (coming soon)</span>
                             </label>
                             <label className="flex items-center space-x-3 opacity-50">
-                                <input type="radio" name="learningStyle" value="Auditory" className="text-blue-500" disabled />
+                                <input
+                                    type="radio"
+                                    name="learningStyle"
+                                    value="I hear you loud and clear (Auditory) (coming soon)"
+                                    className="text-blue-500"
+                                    disabled
+                                />
                                 <span className="text-white">I hear you loud and clear (Auditory) (coming soon)</span>
                             </label>
                             <label className="flex items-center space-x-3 opacity-50">
-                                <input type="radio" name="learningStyle" value="Kinesthetic" className="text-blue-500" disabled />
+                                <input
+                                    type="radio"
+                                    name="learningStyle"
+                                    value="I learn by doing (Kinesthetic) (coming soon)"
+                                    className="text-blue-500"
+                                    disabled
+                                />
                                 <span className="text-white">I learn by doing (Kinesthetic) (coming soon)</span>
                             </label>
                             <label className="flex items-center space-x-3">
-                                <input type="radio" name="learningStyle" value="Reading/Writing" className="text-blue-500" required />
+                                <input
+                                    type="radio"
+                                    name="learningStyle"
+                                    value="I read and write my way to knowledge (Reading/Writing)"
+                                    className="text-blue-500"
+                                    required
+                                    checked={userData.learningStyle === "I read and write my way to knowledge (Reading/Writing)"}
+                                    onChange={handleChange}
+                                />
                                 <span className="text-white">I read and write my way to knowledge (Reading/Writing)</span>
                             </label>
                         </div>
@@ -114,15 +186,37 @@ export default function OnBoardingModal({ isOpen, onClose, onSubmit }: OnBoardin
                         <label className="block text-white mb-3">How familiar are you with the Sonic universe?</label>
                         <div className="space-y-2">
                             <label className="flex items-center space-x-3">
-                                <input type="radio" name="experienceLevel" value="Beginner" className="text-blue-500" required />
+                                <input
+                                    type="radio"
+                                    name="experienceLevel"
+                                    value="New to the galaxy (Beginner)"
+                                    className="text-blue-500"
+                                    required
+                                    checked={userData.experienceLevel === "New to the galaxy (Beginner)"}
+                                    onChange={handleChange}
+                                />
                                 <span className="text-white">New to the galaxy (Beginner)</span>
                             </label>
                             <label className="flex items-center space-x-3">
-                                <input type="radio" name="experienceLevel" value="Intermediate" className="text-blue-500" />
-                                <span className="text-white">I&apos;ve orbited a few planets (Intermediate)</span>
+                                <input
+                                    type="radio"
+                                    name="experienceLevel"
+                                    value="I have orbited a few planets (Intermediate)"
+                                    className="text-blue-500"
+                                    checked={userData.experienceLevel === "I have orbited a few planets (Intermediate)"}
+                                    onChange={handleChange}
+                                />
+                                <span className="text-white">I have orbited a few planets (Intermediate)</span>
                             </label>
                             <label className="flex items-center space-x-3">
-                                <input type="radio" name="experienceLevel" value="Advanced" className="text-blue-500" />
+                                <input
+                                    type="radio"
+                                    name="experienceLevel"
+                                    value="I'm a seasoned space captain (Advanced)"
+                                    className="text-blue-500"
+                                    checked={userData.experienceLevel === "I'm a seasoned space captain (Advanced)"}
+                                    onChange={handleChange}
+                                />
                                 <span className="text-white">I&apos;m a seasoned space captain (Advanced)</span>
                             </label>
                         </div>
