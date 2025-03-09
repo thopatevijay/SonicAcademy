@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FaRobot, FaPlus, FaPaperPlane, FaComments, FaCog } from 'react-icons/fa';
 import CreateAgentModal from '../components/CreateAgentModal';
 import EditAgentModal from '../components/EditAgentModal';
+import { toast } from "sonner"
 
 export default function AIBuilder() {
     const [agents, setAgents] = useState<{ id: number; name: string; secrets: Record<string, unknown>[] }[]>([]);
@@ -14,24 +15,33 @@ export default function AIBuilder() {
     const [editingAgent, setEditingAgent] = useState<null | { id: number; name: string; description?: string }>(null);
 
     const createAgent = async (agentData: { name: string; secrets: Record<string, unknown>[] }) => {
+        toast.info("Creating agent...")
         const data = {
             userId: "123",
             agentName: agentData.name,
             secrets: agentData.secrets,
             characterJson: SONIC_CHARACTER
         }
-        const response = await fetch("/api/create-agent", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        });
+        try {
+            const response = await fetch("/api/create-agent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data),
+            });
 
-        const res = await response.json();
-        if (res.success) {
-            console.log("Agent created with ID:", res.agentId);
-            return true;
-        } else {
-            console.error("Error:", res.error);
+            const res = await response.json();
+            if (res.success) {
+                toast.success("Agent created successfully")
+                console.log("Agent created with ID:", res.agentId);
+                return true;
+            } else {
+                toast.error("Error creating agent")
+                console.error("Error:", res.error);
+                return false;
+            }
+        } catch (error) {
+            toast.error("Error creating agent")
+            console.error("Error:", error);
             return false;
         }
     }

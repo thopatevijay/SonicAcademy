@@ -23,7 +23,8 @@ export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAg
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ name, secrets: secrets.reduce((obj, { key, value }) => ({ ...obj, [key]: value }), {}) });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onSubmit({ name, secrets: secrets.reduce((obj: any, { key, value }) => ({ ...obj, [key as string]: value }), {}) });
         setName('');
         setSecrets([{ key: '', value: '', visible: false }]);
         onClose();
