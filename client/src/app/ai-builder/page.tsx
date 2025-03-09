@@ -34,6 +34,29 @@ export default function AIBuilder() {
     //     }
     // };
 
+    const createAgent = async () => {
+        const mockdata = {
+            userId: "123",
+            agentName: "Agent A",
+            secrets: {
+                apiKey: "123"
+            }
+        }
+        const response = await fetch("/api/create-agent", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(mockdata),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            console.log("Agent created with ID:", data.agentId);
+        } else {
+            console.error("Error:", data.error);
+        }
+    }
+
+
     const selectedAgent = agents.find(agent => agent.id === selectedAgentId);
 
     const handleCreateAgent = (agentData: { name: string; description: string }) => {
@@ -46,7 +69,7 @@ export default function AIBuilder() {
     };
 
     const handleEditAgent = (agentData: { id: number; name: string; description: string }) => {
-        setAgents(agents.map(agent => 
+        setAgents(agents.map(agent =>
             agent.id === agentData.id ? { ...agent, ...agentData } : agent
         ));
     };
@@ -72,7 +95,8 @@ export default function AIBuilder() {
                             transition-all duration-300 shadow-lg hover:shadow-blue-500/50 
                             flex items-center justify-center gap-3 text-lg font-medium
                             hover:scale-[1.02] active:scale-[0.98]"
-                            onClick={() => setIsCreateModalOpen(true)}
+                            // onClick={() => setIsCreateModalOpen(true)}
+                            onClick={createAgent}
                         >
                             <FaPlus className="text-blue-300" />
                             Create New Agent
@@ -169,12 +193,12 @@ export default function AIBuilder() {
                     </div>
                 )}
             </div>
-            <CreateAgentModal 
+            <CreateAgentModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
                 onSubmit={handleCreateAgent}
             />
-            <EditAgentModal 
+            <EditAgentModal
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
                 onSubmit={handleEditAgent}
