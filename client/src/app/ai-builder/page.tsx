@@ -1,5 +1,5 @@
 'use client';
-// import { elizaCharacter } from '../constant';
+import { elizaCharacter } from '../constant';
 import { useState } from 'react';
 import { FaRobot, FaPlus, FaPaperPlane, FaComments, FaCog } from 'react-icons/fa';
 import CreateAgentModal from '../components/CreateAgentModal';
@@ -40,7 +40,8 @@ export default function AIBuilder() {
             agentName: "Agent A",
             secrets: {
                 apiKey: "123"
-            }
+            },
+            characterJson: elizaCharacter
         }
         const response = await fetch("/api/create-agent", {
             method: "POST",

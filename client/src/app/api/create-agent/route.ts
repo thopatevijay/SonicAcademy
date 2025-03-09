@@ -6,6 +6,7 @@ interface Agent {
     userId: string;
     agentName: string;
     secrets: Record<string, unknown>;
+    agentId?: string;  // Added to store the agent ID from the API
 }
 
 // Move MongoDB URI to environment variable
@@ -33,10 +34,9 @@ const clientPromise: Promise<MongoClient> = (() => {
 
 export async function POST(request: Request) {
     try {
-        const { userId, agentName, secrets } = await request.json();
+        const { userId, agentName, secrets, characterJson } = await request.json();
 
-        console.log(userId, agentName, secrets);
-        // Enhanced validation
+        // Input validation
         if (!userId || typeof userId !== 'string') {
             return NextResponse.json(
                 { error: "Invalid or missing userId" },
@@ -58,9 +58,44 @@ export async function POST(request: Request) {
             );
         }
 
-        const agent: Agent = { userId, agentName, secrets };
+        if (!characterJson) {
+            return NextResponse.json(
+                { error: "Character JSON is required" },
+                { status: 400 }
+            );
+        }
+
+        // Step 1: Create agent via API
+        const API_URL = process.env.NEXT_PUBLIC_CREATE_AGENT_URL;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+        const apiResponse = await fetch(`${API_URL}/agent/start`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ characterJson }),
+            signal: controller.signal,
+        });
+
+        console.log(apiResponse);
+        clearTimeout(timeoutId);
+
+        if (!apiResponse.ok) {
+            throw new Error(`API responded with status: ${apiResponse.status}`);
+        }
+
+        const apiData = await apiResponse.json();
 
         // Step 2: Store agent data in MongoDB
+        const agent: Agent = {
+            userId,
+            agentName,
+            secrets,
+            agentId: apiData.agentId // Store the agent ID from the API response
+        };
+
         const client = await clientPromise;
         const db = client.db("sonic_agent_academy");
         const agentsCollection = db.collection("agents");
@@ -69,15 +104,21 @@ export async function POST(request: Request) {
 
         return NextResponse.json({
             success: true,
-            agentId: result.insertedId,
-            message: "Agent created and stored successfully",
+            agentId: apiData.agentId,
             mongoId: result.insertedId,
             agent: agent,
+            apiResponse: apiData
         });
+
     } catch (error) {
-        // Add more specific error handling
         console.error("Error creating agent:", error);
         if (error instanceof Error) {
+            if (error.name === 'AbortError') {
+                return NextResponse.json(
+                    { error: 'Request timeout' },
+                    { status: 504 }
+                );
+            }
             return NextResponse.json(
                 { error: `Failed to create agent: ${error.message}` },
                 { status: 500 }
@@ -89,76 +130,3 @@ export async function POST(request: Request) {
         );
     }
 }
-
-
-
-
-
-
-
-// interface CharacterRequest {
-//     characterPath?: string;
-//     characterJson?: string;
-// }
-
-
-
-// export async function POST(request: Request) {
-//     try {
-//         const body: CharacterRequest = await request.json();
-//         const { characterPath, characterJson } = body;
-
-//         console.log("characterPath:", characterPath);
-//         console.log("characterJson:", characterJson);
-
-//         if (!characterPath && !characterJson) {
-//             return NextResponse.json(
-//                 { error: 'No character path or JSON provided' },
-//                 { status: 400 }
-//             );
-//         }
-
-//         const API_URL = process.env.API_URL;
-
-//         // timeout and proper error handling for fetch
-//         const controller = new AbortController();
-//         const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
-
-//         const response = await fetch(`${API_URL}/agent/start`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ characterJson }),
-//             signal: controller.signal,
-//         });
-
-//         clearTimeout(timeoutId);
-
-//         if (!response.ok) {
-//             throw new Error(`API responded with status: ${response.status}`);
-//         }
-
-//         const data = await response.json();
-//         console.log("Agent created:", data);
-//         return NextResponse.json(data, { status: 200 });
-
-//     } catch (error) {
-//         console.error('API Error:', error);
-
-//         // Check for specific error types
-//         if (error instanceof Error) {
-//             if (error.name === 'AbortError') {
-//                 return NextResponse.json(
-//                     { error: 'Request timeout' },
-//                     { status: 504 }
-//                 );
-//             }
-//         }
-
-//         return NextResponse.json(
-//             { error: 'Failed to create agent' },
-//             { status: 500 }
-//         );
-//     }
-// } 
