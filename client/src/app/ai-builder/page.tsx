@@ -6,48 +6,48 @@ import CreateAgentModal from '../components/CreateAgentModal';
 import EditAgentModal from '../components/EditAgentModal';
 
 export default function AIBuilder() {
-    const [agents, setAgents] = useState([
-        { id: 1, name: 'Agent A' },
-        { id: 2, name: 'Agent B' }
-    ]);
+    const [agents, setAgents] = useState<{ id: number; name: string; secrets: Record<string, unknown>[] }[]>([]);
     const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
     const [message, setMessage] = useState('');
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingAgent, setEditingAgent] = useState<null | { id: number; name: string; description?: string }>(null);
 
-    const createAgent = async () => {
-        const mockdata = {
+    const createAgent = async (agentData: { name: string; secrets: Record<string, unknown>[] }) => {
+        const data = {
             userId: "123",
-            agentName: "SONIC",
-            secrets: {
-                apiKey: "sk_sjskjjk"
-            },
+            agentName: agentData.name,
+            secrets: agentData.secrets,
             characterJson: SONIC_CHARACTER
         }
         const response = await fetch("/api/create-agent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(mockdata),
+            body: JSON.stringify(data),
         });
 
-        const data = await response.json();
-        if (data.success) {
-            console.log("Agent created with ID:", data.agentId);
+        const res = await response.json();
+        if (res.success) {
+            console.log("Agent created with ID:", res.agentId);
+            return true;
         } else {
-            console.error("Error:", data.error);
+            console.error("Error:", res.error);
+            return false;
         }
     }
 
     const selectedAgent = agents.find(agent => agent.id === selectedAgentId);
 
-    const handleCreateAgent = (agentData: { name: string; description: string }) => {
-        const newAgent = {
-            id: agents.length + 1,
-            name: agentData.name,
-            description: agentData.description
-        };
-        setAgents([...agents, newAgent]);
+    const handleCreateAgent = async (agentData: { name: string; secrets: Record<string, unknown>[] }) => {
+        const isSuccess = await createAgent(agentData);
+        if (isSuccess) {
+            const newAgent = {
+                id: agents.length + 1,
+                name: agentData.name,
+                secrets: agentData.secrets
+            };
+            setAgents([...agents, newAgent]);
+        }
     };
 
     const handleEditAgent = (agentData: { id: number; name: string; description: string }) => {

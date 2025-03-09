@@ -8,11 +8,6 @@ interface CreateAgentModalProps {
     onSubmit: (agentData: { name: string; secrets: Record<string, unknown>[] }) => void;
 }
 
-interface Agent {
-    agentName: string;
-    secrets: Record<string, unknown>;
-}
-
 export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAgentModalProps) {
     const [name, setName] = useState('');
     const [secrets, setSecrets] = useState<Record<string, unknown>[]>([{ key: '', value: '', visible: true }]);
@@ -28,10 +23,9 @@ export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAg
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ name, secrets });
+        onSubmit({ name, secrets: secrets.reduce((obj, { key, value }) => ({ ...obj, [key]: value }), {}) });
         setName('');
         setSecrets([{ key: '', value: '', visible: false }]);
-        console.log(secrets);
         // onClose();
     };
 
@@ -107,7 +101,7 @@ export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAg
                             <div key={index} className="flex gap-2 mb-2">
                                 <input
                                     type="text"
-                                    value={secret.key}
+                                    value={secret.key as string}
                                     onChange={(e) => handleSecretChange(index, 'key', e.target.value)}
                                     className="flex-1 bg-gray-800 border border-white/10 rounded-xl px-4 py-3
                                     text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -117,7 +111,7 @@ export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAg
                                 <div className="relative flex-1">
                                     <input
                                         type={secret.visible ? "text" : "password"}
-                                        value={secret.value}
+                                        value={secret.value as string}
                                         onChange={(e) => handleSecretChange(index, 'value', e.target.value)}
                                         className="w-full bg-gray-800 border border-white/10 rounded-xl px-4 py-3
                                         text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
