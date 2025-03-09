@@ -1,18 +1,16 @@
 import { NextResponse } from 'next/server';
 import { MongoClient } from "mongodb";
+import { v4 as uuidv4 } from 'uuid';
 
-// Add type definition for agent
 interface Agent {
     userId: string;
     agentName: string;
     secrets: Record<string, unknown>;
-    agentId?: string;  // Added to store the agent ID from the API
+    agentId?: string; 
 }
 
-// Move MongoDB URI to environment variable
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// Add type definition for global MongoDB client
 declare global {
     // eslint-disable-next-line no-var
     var _mongoClientPromise: Promise<MongoClient> | undefined;
@@ -65,6 +63,18 @@ export async function POST(request: Request) {
             );
         }
 
+        const agentId = uuidv4();
+        
+        const modifiedCharacter = {
+            ...characterJson,
+            id: agentId,
+            name: agentName,
+            settings: {
+                ...characterJson.settings,
+                secrets: secrets
+            }
+        };
+
         // Step 1: Create agent via API
         const API_URL = process.env.NEXT_PUBLIC_CREATE_AGENT_URL;
         const controller = new AbortController();
@@ -75,11 +85,12 @@ export async function POST(request: Request) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ characterJson }),
+            body: JSON.stringify({ 
+                characterJson: modifiedCharacter
+            }),
             signal: controller.signal,
         });
 
-        console.log(apiResponse);
         clearTimeout(timeoutId);
 
         if (!apiResponse.ok) {
@@ -93,7 +104,7 @@ export async function POST(request: Request) {
             userId,
             agentName,
             secrets,
-            agentId: apiData.agentId // Store the agent ID from the API response
+            agentId,// Store the agent ID from the API response
         };
 
         const client = await clientPromise;
@@ -104,7 +115,7 @@ export async function POST(request: Request) {
 
         return NextResponse.json({
             success: true,
-            agentId: apiData.agentId,
+            agentId: agentId,
             mongoId: result.insertedId,
             agent: agent,
             apiResponse: apiData
