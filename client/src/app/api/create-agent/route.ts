@@ -6,7 +6,7 @@ interface Agent {
     userId: string;
     agentName: string;
     secrets: Record<string, unknown>;
-    agentId?: string; 
+    agentId?: string;
 }
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
         }
 
         const agentId = uuidv4();
-        
+
         const modifiedCharacter = {
             ...characterJson,
             id: agentId,
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 characterJson: modifiedCharacter
             }),
             signal: controller.signal,
@@ -96,8 +96,6 @@ export async function POST(request: Request) {
         if (!apiResponse.ok) {
             throw new Error(`API responded with status: ${apiResponse.status}`);
         }
-
-        const apiData = await apiResponse.json();
 
         // Step 2: Store agent data in MongoDB
         const agent: Agent = {
@@ -118,7 +116,6 @@ export async function POST(request: Request) {
             agentId: agentId,
             mongoId: result.insertedId,
             agent: agent,
-            apiResponse: apiData
         });
 
     } catch (error) {

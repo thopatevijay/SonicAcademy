@@ -1,78 +1,81 @@
 'use client';
 
-import { useState } from 'react';
+import { FaComments, FaPaperPlane } from 'react-icons/fa';
 
-export default function Chat() {
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<Array<{ text: string; isUser: boolean }>>([]);
-  const [loading, setLoading] = useState(false);
+interface Message {
+  text: string;
+  isUser: boolean;
+}
 
-  const sendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim()) return;
+interface ChatProps {
+  messages: Message[];
+  sendMessage: (e: React.FormEvent) => void;
+  setMessage: (message: string) => void;
+  message: string;
+  name: string;
+  loading: boolean;
+}
 
-    // Add user message to chat
-    setMessages(prev => [...prev, { text: message, isUser: true }]);
-    setLoading(true);
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message,
-          agentId: 'b850bc30-45f8-0041-a00a-83df46d8555d', // Replace with your agent ID if different
-        }),
-      });
-
-      const data = await response.json();
-      
-      // Add agent responses to chat
-      data.forEach((msg: { text: string }) => {
-        setMessages(prev => [...prev, { text: msg.text, isUser: false }]);
-      });
-    } catch (error) {
-      console.error('Error sending message:', error);
-    } finally {
-      setLoading(false);
-      setMessage('');
-    }
-  };
+export default function Chat({
+  messages,
+  sendMessage,
+  setMessage,
+  message,
+  name,
+  loading,
+}: ChatProps) {
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <div className="border rounded-lg p-4 h-[500px] overflow-y-auto mb-4">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`mb-2 p-2 rounded-lg ${
-              msg.isUser ? 'bg-blue-100 ml-auto' : 'bg-gray-100'
-            } max-w-[80%] ${msg.isUser ? 'text-right' : 'text-left'}`}
-          >
-            <p>{msg.text}</p>
-          </div>
-        ))}
-        {loading && <div className="text-center">Loading...</div>}
+    <div className="bg-gray-800/50 rounded-2xl w-[800px] h-[600px] flex flex-col 
+                        shadow-xl shadow-black/20 border border-white/10">
+      {/* Chat Header */}
+      <div className="p-6 border-b border-white/10 flex items-center gap-3">
+        <FaComments className="text-cyan-400 text-xl" />
+        <h2 className="text-2xl font-semibold bg-gradient-to-r from-cyan-400 to-blue-400 
+                                text-transparent bg-clip-text">
+          Chat with {name}
+        </h2>
       </div>
 
-      <form onSubmit={sendMessage} className="flex gap-2">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 p-2 border rounded"
-          placeholder="Type your message..."
-        />
-        <button 
-          type="submit"
-          disabled={loading}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
-        >
-          Send
-        </button>
+      {/* Chat Messages */}
+      <div className="flex-1 p-6 overflow-y-auto">
+        <div className="bg-gray-900/50 rounded-xl p-6 h-full border border-white/5">
+          {messages?.map((message, index) => (
+            <div key={index} className={`mb-4 ${message.isUser ? 'text-right' : 'text-left'}`}>
+              <div className="inline-block px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-400 text-black font-medium">
+                {message.text}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Chat Input */}
+      <form onSubmit={sendMessage}>
+        <div className="p-6 border-t border-white/10">
+          <div className="flex gap-3">
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder={`Message ${name}...`}
+              className="flex-1 bg-gray-900/50 border border-white/10 rounded-xl px-5 py-4
+                                    text-white placeholder-white/50 focus:outline-none focus:ring-2 
+                                    focus:ring-blue-500/50 focus:border-blue-500"
+            />
+            <button
+              className={`bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl
+                                    transition-all duration-300 flex items-center gap-3 font-medium
+                                    hover:shadow-lg hover:shadow-blue-500/30 hover:scale-[1.02] active:scale-[0.98]
+                                    ${loading ? 'opacity-50 cursor-not-allowed hover:bg-blue-600 hover:scale-100' : ''}`}
+              disabled={loading}
+            >
+              <FaPaperPlane className="text-blue-300" />
+              Send
+            </button>
+          </div>
+        </div>
       </form>
     </div>
-  );
+  )
 }
