@@ -10,7 +10,7 @@ interface CreateAgentModalProps {
 
 export default function CreateAgentModal({ isOpen, onClose, onSubmit }: CreateAgentModalProps) {
     const [name, setName] = useState('');
-    const [secrets, setSecrets] = useState<Record<string, unknown>[]>([{ key: '', value: '', visible: true }]);
+    const [secrets, setSecrets] = useState<Record<string, unknown>[]>([{ key: '', value: '', visible: false }]);
     const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {

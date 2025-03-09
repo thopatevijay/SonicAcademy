@@ -67,15 +67,13 @@ export default function Home() {
       <div className="text-center">
         <a
           onClick={() => setIsOnBoardingModalOpen(true)}
-          className="neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 text-white"
+          className="neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 text-white cursor-pointer"
         >
           Begin Your Adventure
           <FaChevronRight />
         </a>
       </div>
-
       {/* Modal */}
-
       <OnBoardingModal
         isOpen={isOnBoardingModalOpen}
         onClose={() => setIsOnBoardingModalOpen(false)}

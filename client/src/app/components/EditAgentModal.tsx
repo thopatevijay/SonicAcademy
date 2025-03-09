@@ -5,8 +5,8 @@ import { FaRobot, FaTimes } from 'react-icons/fa';
 interface EditAgentModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (agentData: { id: number; name: string; description: string }) => void;
-    agent: { id: number; name: string; description?: string } | null;
+    onSubmit: (agentData: { agentId: string; agentName: string; description: string }) => void;
+    agent: { agentId: string; agentName: string; description?: string } | null;
 }
 
 export default function EditAgentModal({ isOpen, onClose, onSubmit, agent }: EditAgentModalProps) {
@@ -22,7 +22,7 @@ export default function EditAgentModal({ isOpen, onClose, onSubmit, agent }: Edi
 
     useEffect(() => {
         if (agent) {
-            setName(agent.name);
+            setName(agent.agentName);
             setDescription(agent.description || '');
         }
     }, [agent]);
@@ -31,24 +31,24 @@ export default function EditAgentModal({ isOpen, onClose, onSubmit, agent }: Edi
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ id: agent.id, name, description });
+        onSubmit({ agentId: agent.agentId, agentName: name, description });
         onClose();
     };
 
     return (
         <div className="fixed inset-0 flex items-start justify-center z-50">
             {/* Backdrop */}
-            <div 
+            <div
                 className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300"
                 style={{ opacity: isAnimating ? 1 : 0 }}
                 onClick={onClose}
             />
-            
+
             {/* Modal */}
-            <div 
+            <div
                 className="bg-gray-900 rounded-2xl w-[500px] border border-white/10 shadow-xl mt-20
                     transition-all duration-300 relative"
-                style={{ 
+                style={{
                     transform: isAnimating ? 'translateY(0)' : 'translateY(-100%)',
                     opacity: isAnimating ? 1 : 0
                 }}
@@ -58,7 +58,7 @@ export default function EditAgentModal({ isOpen, onClose, onSubmit, agent }: Edi
                         <FaRobot className="text-blue-400" />
                         Edit Agent
                     </h2>
-                    <button 
+                    <button
                         onClick={onClose}
                         className="text-gray-400 hover:text-white transition-colors"
                     >

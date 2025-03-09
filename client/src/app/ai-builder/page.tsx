@@ -166,7 +166,10 @@ export default function AIBuilder() {
                                 >
                                     <button
                                         className="flex-1 flex items-center gap-3"
-                                        onClick={() => setSelectedAgentId(agent.agentId)}
+                                        onClick={() => {
+                                            setSelectedAgentId(agent.agentId);
+                                            setMessages([]);
+                                        }}
                                     >
                                         <FaRobot className={selectedAgentId === agent.agentId ? 'text-blue-400' : 'text-cyan-400'} />
                                         <span className="font-medium">{agent.agentName}</span>
