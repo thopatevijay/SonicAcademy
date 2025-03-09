@@ -1,17 +1,18 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { FaRobot, FaTimes } from 'react-icons/fa';
+import { FaRobot, FaTimes, FaEye, FaEyeSlash, FaTrash, FaPlus } from 'react-icons/fa';
 
 interface EditAgentModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (agentData: { id: number; name: string; description: string }) => void;
-    agent: { id: number; name: string; description?: string } | null;
+    onSubmit: (agentData: { agentId: string; agentName: string; description: string; secrets: Record<string, unknown>[] }) => void;
+    agent: { agentId: string; agentName: string; description?: string; secrets?: Record<string, unknown>[] } | null;
 }
 
 export default function EditAgentModal({ isOpen, onClose, onSubmit, agent }: EditAgentModalProps) {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
+    const [secrets, setSecrets] = useState<Record<string, unknown>[]>([{ key: '', value: '', visible: false }]);
     const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
@@ -22,8 +23,17 @@ export default function EditAgentModal({ isOpen, onClose, onSubmit, agent }: Edi
 
     useEffect(() => {
         if (agent) {
-            setName(agent.name);
+            setName(agent.agentName);
             setDescription(agent.description || '');
+            // Convert secrets object to array format
+            if (agent.secrets) {
+                const secretsArray = Object.entries(agent.secrets).map(([key, value]) => ({
+                    key,
+                    value,
+                    visible: false,
+                }));
+                setSecrets(secretsArray);
+            }
         }
     }, [agent]);
 
@@ -31,24 +41,49 @@ export default function EditAgentModal({ isOpen, onClose, onSubmit, agent }: Edi
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ id: agent.id, name, description });
+        // Convert secrets array back to object format
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const secretsObject = secrets.reduce((obj: any, { key, value }) => ({ ...obj, [key as string]: value }), {});
+        onSubmit({ agentId: agent.agentId, agentName: name, description, secrets: secretsObject });
         onClose();
+    };
+
+    const handleSecretChange = (index: number, field: string, value: string) => {
+        const newSecrets = [...secrets];
+        newSecrets[index][field] = value;
+        setSecrets(newSecrets);
+    };
+
+    const toggleSecretVisibility = (index: number) => {
+        const newSecrets = [...secrets];
+        newSecrets[index].visible = !newSecrets[index].visible;
+        setSecrets(newSecrets);
+    };
+
+    const removeSecret = (index: number) => {
+        const newSecrets = [...secrets];
+        newSecrets.splice(index, 1);
+        setSecrets(newSecrets);
+    };
+
+    const addSecret = () => {
+        setSecrets([...secrets, { key: '', value: '', visible: false }]);
     };
 
     return (
         <div className="fixed inset-0 flex items-start justify-center z-50">
             {/* Backdrop */}
-            <div 
+            <div
                 className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300"
                 style={{ opacity: isAnimating ? 1 : 0 }}
                 onClick={onClose}
             />
-            
+
             {/* Modal */}
-            <div 
+            <div
                 className="bg-gray-900 rounded-2xl w-[500px] border border-white/10 shadow-xl mt-20
                     transition-all duration-300 relative"
-                style={{ 
+                style={{
                     transform: isAnimating ? 'translateY(0)' : 'translateY(-100%)',
                     opacity: isAnimating ? 1 : 0
                 }}
@@ -58,7 +93,7 @@ export default function EditAgentModal({ isOpen, onClose, onSubmit, agent }: Edi
                         <FaRobot className="text-blue-400" />
                         Edit Agent
                     </h2>
-                    <button 
+                    <button
                         onClick={onClose}
                         className="text-gray-400 hover:text-white transition-colors"
                     >
@@ -80,15 +115,51 @@ export default function EditAgentModal({ isOpen, onClose, onSubmit, agent }: Edi
                         />
                     </div>
                     <div>
-                        <label className="block text-white mb-2">Description</label>
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full bg-gray-800 border border-white/10 rounded-xl px-4 py-3
-                            text-white focus:outline-none focus:ring-2 focus:ring-blue-500 h-32"
-                            placeholder="Enter agent description"
-                            required
-                        />
+                        <label className="block text-white mb-2">Secrets</label>
+                        {secrets.map((secret, index) => (
+                            <div key={index} className="flex gap-2 mb-2">
+                                <input
+                                    type="text"
+                                    value={secret.key as string}
+                                    onChange={(e) => handleSecretChange(index, 'key', e.target.value)}
+                                    className="flex-1 bg-gray-800 border border-white/10 rounded-xl px-4 py-3
+                                    text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Secret Key"
+                                />
+                                <div className="relative flex-1">
+                                    <input
+                                        type={secret.visible ? "text" : "password"}
+                                        value={secret.value as string}
+                                        onChange={(e) => handleSecretChange(index, 'value', e.target.value)}
+                                        className="w-full bg-gray-800 border border-white/10 rounded-xl px-4 py-3
+                                        text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Secret Value"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleSecretVisibility(index)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                                    >
+                                        {secret.visible ? <FaEyeSlash /> : <FaEye />}
+                                    </button>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => removeSecret(index)}
+                                    className="bg-red-500/20 hover:bg-red-500/30 text-red-400 p-3 rounded-xl"
+                                >
+                                    <FaTrash />
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            onClick={addSecret}
+                            className="w-full mt-2 bg-white/5 hover:bg-white/10 text-white px-4 py-2 rounded-xl
+                            flex items-center justify-center gap-2"
+                        >
+                            <FaPlus /> Add Secret
+                        </button>
                     </div>
                     <div className="flex justify-end gap-3 pt-4">
                         <button

@@ -41,7 +41,7 @@ export default function Lessons() {
     const requestLessons = useCallback(async (lesson: Lesson) => {
         try {
             setLoading(true);
-            const response = await fetch('/api/chat', {
+            const response = await fetch('/api/create-lesson', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
