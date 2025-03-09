@@ -1,5 +1,5 @@
 'use client';
-import { elizaCharacter } from '../constant';
+// import { elizaCharacter } from '../constant';
 import { useState } from 'react';
 import { FaRobot, FaPlus, FaPaperPlane, FaComments, FaCog } from 'react-icons/fa';
 import CreateAgentModal from '../components/CreateAgentModal';
@@ -16,23 +16,23 @@ export default function AIBuilder() {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingAgent, setEditingAgent] = useState<null | { id: number; name: string; description?: string }>(null);
 
-    const createAgent = async () => {
-        console.log("Creating agent...");
+    // const createAgent = async () => {
+    //     console.log("Creating agent...");
 
-        try {
-            const response = await fetch('/api/create-agent', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ characterJson: elizaCharacter }),
-            });
-            const data = await response.json();
-            console.log("Agent created:", data);
-        } catch (error) {
-            console.error("Error creating agent:", error);
-        }
-    };
+    //     try {
+    //         const response = await fetch('/api/create-agent', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({ characterJson: elizaCharacter }),
+    //         });
+    //         const data = await response.json();
+    //         console.log("Agent created:", data);
+    //     } catch (error) {
+    //         console.error("Error creating agent:", error);
+    //     }
+    // };
 
     const selectedAgent = agents.find(agent => agent.id === selectedAgentId);
 
