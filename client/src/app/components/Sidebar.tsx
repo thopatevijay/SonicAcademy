@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, GraduationCap, Bot } from 'lucide-react';
+import { Home, GraduationCap, Bot, LogOut } from 'lucide-react';
 import { cn } from '../utils/utils';
+import { usePrivy } from '@privy-io/react-auth';
 
 const navItems = [
   { name: 'Home', path: '/', icon: Home },
@@ -13,13 +14,13 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-
+  const { logout, authenticated, ready, user } = usePrivy();
   return (
     <aside className="group w-84 border-r bg-background px-4 py-6 bg-gradient-to-b from-gray-900 to-black p-8">
       <div className="mb-6 px-2">
         <h1 className="text-2xl font-bold text-white">Sonic Academy</h1>
       </div>
-      
+
       {/* User Progress Section */}
       {/* <div className="mb-8 cyber-box p-4">
         <div className="flex items-center gap-3 mb-2">
@@ -35,25 +36,50 @@ export default function Sidebar() {
           </div>
         </div>
       </div> */}
-      
+
       <nav className="space-y-1">
-        {navItems.map((item) => (
-          <Link
-            key={item.path}
-            href={item.path}
-            className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground w-full cursor-pointer",
-              pathname === item.path ? 
-                "bg-primary text-primary-foreground" : 
-                "transparent"
-            )}
-          >
-            <item.icon className="h-4 w-4 shrink-0 text-white" />
-            <span className="truncate text-white">{item.name}</span>
-          </Link>
-        ))}
+        {navItems.map((item) => {
+          const isDisabled = !authenticated && item.path !== '/';
+          return (
+            <Link
+              key={item.path}
+              href={isDisabled ? '#' : item.path}
+              className={cn(
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors w-full",
+                isDisabled ? 
+                  "opacity-50 cursor-not-allowed" :
+                  "hover:bg-accent hover:text-accent-foreground cursor-pointer",
+                pathname === item.path ?
+                  "bg-primary text-primary-foreground" :
+                  "transparent"
+              )}
+            >
+              <item.icon className="h-4 w-4 shrink-0 text-white" />
+              <span className="truncate text-white">{item.name}</span>
+            </Link>
+          );
+        })}
       </nav>
-      
+
+
+      {authenticated && ready && (
+        <div className="mt-auto pt-6">
+          <div className="rounded-lg bg-gray-800 p-4">
+            <div className="mb-3">
+              <p className="text-sm text-gray-400">Signed in as</p>
+              <p className="text-sm text-white truncate">{user?.email?.address}</p>
+            </div>
+            <div
+              onClick={logout}
+              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-red-500 hover:text-red-400 hover:bg-gray-700 transition-colors cursor-pointer"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* <div className="mt-4 p-4 cyber-box">
         <h3 className="text-sm text-gray-400 mb-2">Latest Achievement</h3>
         <div className="flex items-center gap-3">

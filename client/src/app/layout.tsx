@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./components/Sidebar";
 import { Toaster } from "../../components/ui/sonner";
+import PrivyProviderClient from "./components/PrivyProviderClient";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,14 +27,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto relative">
-            <div className="bg-grid"></div>
-            {children}
-            <Toaster />
-          </main>
-        </div>
+        <PrivyProviderClient>
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto relative">
+              <div className="bg-grid"></div>
+              {children}
+              <Toaster />
+            </main>
+          </div>
+        </PrivyProviderClient>
       </body>
     </html>
   );
