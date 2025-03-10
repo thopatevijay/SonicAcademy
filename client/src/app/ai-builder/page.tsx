@@ -6,6 +6,7 @@ import CreateAgentModal from '../components/CreateAgentModal';
 import EditAgentModal from '../components/EditAgentModal';
 import { toast } from "sonner"
 import Chat from '../components/Chat';
+import { usePrivy } from '@privy-io/react-auth';
 
 interface Agent {
     agentId: string;
@@ -22,20 +23,21 @@ export default function AIBuilder() {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<Array<{ text: string; isUser: boolean }>>([]);
     const [loading, setLoading] = useState(false);
+    const { user } = usePrivy();
 
     useEffect(() => {
         const fetchAgents = async () => {
-            const response = await fetch("/api/get-agents");
+            const response = await fetch(`/api/get-agents?userId=${user?.id}`);
             const data = await response.json();
             setAgents(data.agents);
         }
         fetchAgents();
-    }, []);
+    }, [user?.id]);
 
     const createAgent = async (agentData: { agentName: string; secrets: Record<string, unknown>[] }) => {
         toast.info("Creating agent...")
         const data = {
-            userId: "123",
+            userId: user?.id,
             agentName: agentData.agentName,
             secrets: agentData.secrets,
             characterJson: SONIC_CHARACTER
@@ -70,7 +72,7 @@ export default function AIBuilder() {
         const agent = await createAgent(agentData);
         if (agent) {
             const fetchAgents = async () => {
-                const response = await fetch("/api/get-agents");
+                const response = await fetch(`/api/get-agents?userId=${user?.id}`);
                 const data = await response.json();
                 setAgents(data.agents);
             }

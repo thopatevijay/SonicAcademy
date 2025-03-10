@@ -1,11 +1,75 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { FaRocket, FaLightbulb, FaRobot, FaChevronRight } from 'react-icons/fa';
 import OnBoardingModal from './components/OnBoardingModal';
+import { usePrivy } from '@privy-io/react-auth';
+import { useLogin } from '@privy-io/react-auth';
+import { useRouter } from 'next/navigation';
+type UserData = {
+  ageGroup: string;
+  learningStyle: string;
+  experienceLevel: string;
+}
 
 export default function Home() {
+  const router = useRouter();
+  const [userData, setUserData] = useState<UserData>({
+    ageGroup: '',
+    learningStyle: '',
+    experienceLevel: ''
+  });
   const [isOnBoardingModalOpen, setIsOnBoardingModalOpen] = useState(false);
+  const { authenticated, user } = usePrivy();
+  const [isNewUser, setIsNewUser] = useState(false);
+  const { login } = useLogin({
+    onComplete: ({ isNewUser }) => {
+      setIsNewUser(isNewUser);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      if (!user?.id) {
+        throw new Error('User ID is required');
+      }
+
+      const dataToBeSent = {
+        userId: user.id,
+        ageGroup: userData.ageGroup,
+        learningStyle: userData.learningStyle,
+        experienceLevel: userData.experienceLevel,
+        isNewUser
+      }
+
+      const response = await fetch('/api/update-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataToBeSent),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update user data');
+      }
+
+      router.push('/lessons');
+      setIsOnBoardingModalOpen(false);
+
+    } catch (error) {
+      console.error('Error updating user:', error);
+      if (error instanceof Error) {
+        console.error(error.message);
+      }
+    }
+  }, [user?.id, userData, isNewUser, router, setIsOnBoardingModalOpen]);
 
   const features = [
     {
@@ -66,18 +130,23 @@ export default function Home() {
       {/* CTA Button */}
       <div className="text-center">
         <a
-          onClick={() => setIsOnBoardingModalOpen(true)}
+          onClick={() => authenticated ? setIsOnBoardingModalOpen(true) : login()}
           className="neon-button px-8 py-3 rounded-lg font-semibold text-base inline-flex items-center gap-2 text-white cursor-pointer"
         >
-          Begin Your Adventure
+          {authenticated ? 'Begin Your Adventure' : 'Sign In'}
           <FaChevronRight />
         </a>
       </div>
-      {/* Modal */}
-      <OnBoardingModal
-        isOpen={isOnBoardingModalOpen}
-        onClose={() => setIsOnBoardingModalOpen(false)}
-      />
+
+      {authenticated && (
+        <OnBoardingModal
+          isOpen={isOnBoardingModalOpen}
+          onClose={() => setIsOnBoardingModalOpen(false)}
+          userData={userData}
+          setUserData={setUserData}
+          handleSubmit={handleSubmit}
+        />
+      )}
     </div>
   );
 }

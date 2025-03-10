@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { FaRobot, FaTimes, FaRocket } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
+
 type UserData = {
     ageGroup: string;
     learningStyle: string;
@@ -11,17 +11,15 @@ type UserData = {
 interface OnBoardingModalProps {
     isOpen: boolean;
     onClose: () => void;
+    userData: UserData;
+    setUserData: (userData: UserData) => void;
+    handleSubmit: (e: React.FormEvent) => void;
 }
 
-export default function OnBoardingModal({ isOpen, onClose }: OnBoardingModalProps) {
-    const router = useRouter();
+export default function OnBoardingModal({ isOpen, onClose, userData, setUserData, handleSubmit }: OnBoardingModalProps) {
     const [isAnimating, setIsAnimating] = useState(false);
-    const [userData, setUserData] = useState<UserData>({
-        ageGroup: '',
-        learningStyle: '',
-        experienceLevel: ''
-    });
-
+  
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setUserData({ ...userData, [name]: value });
@@ -35,16 +33,6 @@ export default function OnBoardingModal({ isOpen, onClose }: OnBoardingModalProp
     }, [isOpen]);
 
     if (!isOpen) return null;
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // onSubmit({ name: userData.ageGroup, description: userData.learningStyle, experienceLevel: userData.experienceLevel });
-        console.log("UserData", userData)
-        localStorage.setItem('userData', JSON.stringify(userData));
-        // Navigate to lessons page
-        router.push('/lessons');
-        onClose();
-    };
 
     return (
         <div className="fixed inset-0 flex items-start justify-center z-50">
