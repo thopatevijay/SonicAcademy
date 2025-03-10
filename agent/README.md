@@ -4,3 +4,15 @@ The `sonic-agent-academy-plugin` is a custom plugin for the ElizaOS framework th
 
 - **Purpose**: Deliver tailored blockchain education.
 - **Key Feature**: Generates markdown lessons customized to user inputs.
+
+## .env Configuration
+
+Create a `.env` file in the `agent` directory with the following variables:
+
+```env
+GOOGLE_GENERATIVE_AI_API_KEY=
+SERVER_PORT=8080
+# When true, disables interactive chat mode for background process operation
+DAEMON_PROCESS=false
+
+```
