@@ -1,7 +1,6 @@
-
 # Sonic Academy
 
-**Sonic Academy** is an innovative platform designed to make learning about the [Sonic blockchain](https://www.soniclabs.com/) accessible, engaging, and personalized for everyone. Whether you're a beginner eager to explore blockchain or a developer aiming to build AI agents on Sonic, Sonic Academy provides an intuitive, gamified experience to guide you every step of the way. Built on the [ElizaOS framework](https://elizaos.github.io/eliza/), it opens the door to blockchain education and agent creation for all.
+**Sonic Academy** is an innovative platform designed to make learning about the <a href="https://www.soniclabs.com/" target="_blank">Sonic blockchain</a> accessible, engaging, and personalized for everyone. Whether you're a beginner eager to explore blockchain or a developer aiming to build AI agents on Sonic, Sonic Academy provides an intuitive, gamified experience to guide you every step of the way. Built on the <a href="https://elizaos.github.io/eliza/" target="_blank">ElizaOS framework</a>, it opens the door to blockchain education and agent creation for all.
 
 ## Table of Contents
 - [Project Overview](#project-overview)
@@ -28,28 +27,28 @@ Traditional blockchain resources, like documentation, are often static, technica
 - **Simplified AI Agents**: The concept of AI agents is exciting but often feels exclusive to tech users. Sonic Academy’s AI Builder lets anyone create their own agents on the Sonic blockchain in 1-2 easy steps.
 - **Trust and Ownership**: Users don’t have to rely on pre-built AI agents created by others. With Sonic Academy, you build your own, fostering trust and personal connection.
 - **Developer Support**: Developers can learn Sonic and integrate the `sonic-plugin` to create advanced agents or blockchain features in their projects.
-- **Community Engagement**: Our Twitter AI agent, [Prof.SonicAcademy](https://twitter.com/Prof_S_Academy), educates, engages, and grows the Sonic community—an example of what users can create.
+- **Community Engagement**: Our Twitter AI agent, <a href="https://twitter.com/Prof_S_Academy" target="_blank">Prof.SonicAcademy</a>, educates, engages, and grows the Sonic community—an example of what users can create.
 
 ## Features
 - **User Interface**: A sleek, gamified UI where users can learn about Sonic and build their own on-chain AI agents.
 - **`sonic-plugin`**: A custom ElizaOS plugin powering Sonic blockchain actions:
   - **Actions**: `TRANSFER_TOKEN` and `GET_BALANCE`.
   - **Secure Wallet**: Includes `SonicWalletProvider` for safe transactions.
-  - **Integration**: Embedded in the AI Builder for seamless agent creation. Developers can also use it standalone to build Sonic-based agents. [GitHub Link](https://github.com/thopatevijay/plugin-sonic)
-- **`sonic-agent-academy-plugin`**: A plugin generating personalized Sonic blockchain lessons: [GitHub Link](https://github.com/thopatevijay/SonicAcademy/tree/main/agent/src/sonic-agent-academy-plugin)
+  - **Integration**: Embedded in the AI Builder for seamless agent creation. Developers can also use it standalone to build Sonic-based agents. <a href="https://github.com/thopatevijay/plugin-sonic" target="_blank">GitHub Link</a>
+- **`sonic-agent-academy-plugin`**: A plugin generating personalized Sonic blockchain lessons: <a href="https://github.com/thopatevijay/SonicAcademy/tree/main/agent/src/sonic-agent-academy-plugin" target="_blank">GitHub Link</a>
   - **Personalization**: Lessons adapt to user inputs (age, style, experience).
   - **Extensibility**: Developers can integrate it into their ElizaOS projects to create custom lessons.
   - **Upcoming**: Visual and video lessons in development.
 - **AI Builder**: A beginner-friendly tool to create AI agents in easy steps, leveraging `sonic-plugin` for on-chain deployment.
-- **Live Twitter AI Agent**: [Prof.SonicAcademy](https://twitter.com/Prof_S_Academy) is a real-world example of an AI agent built with Sonic Academy, guiding the community on Twitter. [GitHub Link](https://github.com/thopatevijay/Prof.SonicAcademy)
+- **Live Twitter AI Agent**: <a href="https://twitter.com/Prof_S_Academy" target="_blank">Prof.SonicAcademy</a> is a real-world example of an AI agent built with Sonic Academy, guiding the community on Twitter. <a href="https://github.com/thopatevijay/Prof.SonicAcademy" target="_blank">GitHub Link</a>
 
 
 ## Tech Stack
-- **Frontend**: [Next.js](https://nextjs.org/) (v15.2.1) with [TypeScript](https://www.typescriptlang.org/) and [Tailwind CSS](https://tailwindcss.com/).
-- **Backend**: [ElizaOS framework](https://elizaos.github.io/eliza/) with custom plugins (`sonic-plugin`, `sonic-agent-academy-plugin`).
-- **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) for storing agent and lesson data.
+- **Frontend**: <a href="https://nextjs.org/" target="_blank">Next.js</a> (v15.2.1) with <a href="https://www.typescriptlang.org/" target="_blank">TypeScript</a> and <a href="https://tailwindcss.com/" target="_blank">Tailwind CSS</a>.
+- **Backend**: <a href="https://elizaos.github.io/eliza/" target="_blank">ElizaOS framework</a> with custom plugins (`sonic-plugin`, `sonic-agent-academy-plugin`).
+- **Database**: <a href="https://www.mongodb.com/cloud/atlas" target="_blank">MongoDB Atlas</a> for storing agent and lesson data.
 - **API**: RESTful API for agent creation and management.
-- **Deployment**: [Vercel](https://vercel.com/) (or your preferred platform).
+- **Deployment**: <a href="https://vercel.com/" target="_blank">Vercel</a>.
 
 
 ## Installation
@@ -58,6 +57,7 @@ To run Sonic Academy locally:
    ```bash
    git clone https://github.com/thopatevijay/SonicAcademy.git
    cd SonicAcademy
+   ```
 
 ## Usage
 
@@ -104,3 +104,4 @@ This project is licensed under the MIT License.
 
 
 Built with ❤️ for the Sonic DeFAI Hackathon, March 2025.
+
