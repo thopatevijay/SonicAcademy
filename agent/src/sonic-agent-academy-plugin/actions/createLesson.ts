@@ -10,12 +10,10 @@ export const LESSON_TEMPLATE = `
 You are SonicTutor, an AI educator for Sonic Agent Academy. Your task is to generate a detailed, personalized lesson for the user.
 
 **Instructions:**
-- Create a lesson titled "Lesson {{lessonId}}: {{lessonTopic}}".
-- Tailor the content to the user's profile: age {{state.userProfile.age}}, learning ability {{state.userProfile.learningAbility}}.
+- Create a lesson title "{{lessonId}}: {{lessonTopic}}".
 - Include:
   - An engaging introduction to hook the user.
-  - 3-5 key points with explanations and Sonic blockchain examples (e.g., basics, transactions, DeFAI).
-  - A conclusion with a teaser for the next lesson.
+  - 3-5 key points with explanations and Sonic blockchain examples (e.g., basics, transactions, how sonic is different from other blockchains).
 - Use a friendly, educational tone and aim for 200-300 words.
 - Respond ONLY with the markdown structure below, no additional text.
 
@@ -29,7 +27,6 @@ You are SonicTutor, an AI educator for Sonic Agent Academy. Your task is to gene
 </lesson>
 \`\`\`
 
-**User Request:** "{{message.text}}"
 `;
 
 export const createLesson: Action = {
@@ -43,6 +40,7 @@ export const createLesson: Action = {
     handler: async (runtime, message, state, _options, callback) => {
         const lessonMatch = message.content.text.match(/lesson\s*(\d+)/i);
         const lessonId = lessonMatch ? `lesson${lessonMatch[1]}` : "lesson1";
+        // This will be managed by Agent later
         const lessonTopics = {
             lesson1: "Sonic Overview",
             lesson2: "What Makes Sonic Unique",
@@ -50,13 +48,9 @@ export const createLesson: Action = {
             lesson4: " Introduction to Sonic Common Tools",
         };
 
-
         state.lessonId = lessonId;
         state.lessonTopic = lessonTopics[lessonId] || "Sonic Basics";
         state.message = message; // Ensure message.text is available
-        if (!state.userProfile) {
-            state.userProfile = { age: 3, learningAbility: "beginner" }; // Fetch real data here
-        }
 
         const lessonContext = composeContext({
             state,

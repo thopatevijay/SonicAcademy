@@ -1,32 +1,12 @@
 import { NextResponse } from 'next/server';
 
-type Agent = {
-    id: string;
-    name: string;
-    clients: string[];
-}
-
 export async function POST(request: Request) {
     try {
-        const NEXT_PUBLIC_CREATE_LESSON_URL = process.env.NEXT_PUBLIC_CREATE_LESSON_URL;
-        if (!NEXT_PUBLIC_CREATE_LESSON_URL) {
-            throw new Error('NEXT_PUBLIC_CREATE_LESSON_URL is not set');
+        const NEXT_PUBLIC_CREATE_AGENT_URL = process.env.NEXT_PUBLIC_CREATE_AGENT_URL;
+        if (!NEXT_PUBLIC_CREATE_AGENT_URL) {
+            throw new Error('NEXT_PUBLIC_CREATE_AGENT_URL is not set');
         }
 
-        // Fetch agents first
-        const agentsResponse = await fetch(`${NEXT_PUBLIC_CREATE_LESSON_URL}/agents`);
-        if (!agentsResponse.ok) {
-            throw new Error(`Failed to fetch agents: ${agentsResponse.status}`);
-        }
-        
-        const agentsData = await agentsResponse.json();
-        const sonicTutor = agentsData.agents.find((agent: Agent) => agent.name === "SonicTutor");
-        
-        if (!sonicTutor) {
-            throw new Error('SonicTutor agent not found');
-        }
-
-        console.log(sonicTutor);
         const body = await request.json();
         const payload = {
             text: body.message,
@@ -36,7 +16,7 @@ export async function POST(request: Request) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-        const response = await fetch(`${NEXT_PUBLIC_CREATE_LESSON_URL}/${sonicTutor.id}/message`, {
+        const response = await fetch(`${NEXT_PUBLIC_CREATE_AGENT_URL}/${body.agentId}/message`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
