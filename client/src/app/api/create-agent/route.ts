@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 interface Agent {
     userId: string;
     agentName: string;
-    secrets: Record<string, unknown>;
     agentId?: string;
 }
 
@@ -101,8 +100,7 @@ export async function POST(request: Request) {
         const agent: Agent = {
             userId,
             agentName,
-            secrets,
-            agentId,// Store the agent ID from the API response
+            agentId,
         };
 
         const client = await clientPromise;

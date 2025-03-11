@@ -124,7 +124,7 @@ export default function Lessons() {
 
         initializeLesson();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user?.id, router, requestLessons, ready, authenticated, lessonState.current]);
+    }, [user?.id, router, ready, authenticated]);
 
     const handleLessonNavigation = (direction: NavigationDirection) => {
         if (lessonState.current === TOTAL_LESSONS && direction === 'next') {

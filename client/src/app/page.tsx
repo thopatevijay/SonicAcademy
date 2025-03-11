@@ -6,6 +6,8 @@ import OnBoardingModal from './components/OnBoardingModal';
 import { usePrivy } from '@privy-io/react-auth';
 import { useLogin } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
+import { toast } from "sonner"
+
 type UserData = {
   ageGroup: string;
   learningStyle: string;
@@ -33,7 +35,7 @@ export default function Home() {
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-
+    toast.info('Storing your mission...');
     try {
       if (!user?.id) {
         throw new Error('User ID is required');
@@ -60,13 +62,17 @@ export default function Home() {
         throw new Error(errorData.message || 'Failed to update user data');
       }
 
+      setTimeout(() => {
+        toast.success('Mission stored successfully!');
+        setIsOnBoardingModalOpen(false);
+      }, 3000);
       router.push('/lessons');
-      setIsOnBoardingModalOpen(false);
 
     } catch (error) {
       console.error('Error updating user:', error);
       if (error instanceof Error) {
         console.error(error.message);
+        toast.error('Failed to update user data');
       }
     }
   }, [user?.id, userData, isNewUser, router, setIsOnBoardingModalOpen]);
