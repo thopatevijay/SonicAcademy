@@ -33,8 +33,8 @@ export async function POST(request: Request) {
         };
 
         // Add timeout and proper error handling for fetch
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        // const controller = new AbortController();
+        // const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
         const response = await fetch(`${NEXT_PUBLIC_CREATE_LESSON_URL}/${sonicTutor.id}/message`, {
             method: 'POST',
@@ -42,10 +42,10 @@ export async function POST(request: Request) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(payload),
-            signal: controller.signal,
+            // signal: controller.signal,
         });
 
-        clearTimeout(timeoutId);
+        // clearTimeout(timeoutId);
 
         if (!response.ok) {
             throw new Error(`API responded with status: ${response.status}`);
