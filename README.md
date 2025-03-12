@@ -51,13 +51,103 @@ Traditional blockchain resources, like documentation, are often static, technica
 - **Deployment**: <a href="https://vercel.com/" target="_blank">Vercel</a>.
 
 
-## Installation
+## Installation & Setup
 To run Sonic Academy locally:
-1. **Clone the repository**:
+
+**Clone the repository**:
    ```bash
    git clone https://github.com/thopatevijay/SonicAcademy.git
    cd SonicAcademy
    ```
+
+This is the main repository for SonicAcademy, containing the following directory structure:
+
+```text
+SonicAcademy/
+├── agent/
+└── client/
+```
+
+-   `agent/`: Serves as the backend.
+    
+-   `client/`: Serves as the frontend.
+    
+
+**Frontend (Client)**
+
+The client directory is deployed on Vercel at [link](https://sonic-academy.vercel.app/). To run the frontend locally, follow these steps:
+
+1.  Navigate to the client directory:
+    
+    ```bash
+    cd client
+    ```
+    
+2.  Install dependencies:
+    
+    ```bash
+    npm install
+    ```
+    
+3.  Start the development server:
+    
+    ```bash
+    npm run dev
+    ```
+    
+
+This will launch the client application locally.
+
+**Backend (Agent)**
+
+The agent directory was originally forked from the "eliza-starter" kit provided by elizaOS. However, due to frequent changes in the elizaOS core repository, it faced dependency issues, making it difficult to deploy on a server or create new agents.
+
+These issues have been resolved in the elizaOS core repository. As a result, I forked it to create a more stable backend called "SONIC-ACADEMY" ([repository link](https://github.com/thopatevijay/SONIC-ACADEMY)). This repository is deployed on the Railway platform and now serves as the backend for the SonicAcademy project, replacing the original agent directory's functionality.
+
+I recommend using the "SONIC-ACADEMY" repository for the backend to ensure better stability and sustainable performance.
+
+**Setting Up the Backend Locally**
+
+To set up the "SONIC-ACADEMY" backend on your local machine, please follow the instructions provided in its repository: [SONIC-ACADEMY README](https://github.com/thopatevijay/SONIC-ACADEMY/blob/main/README.md).
+
+Testing the Project
+
+To test the SonicAcademy project locally, follow these steps:
+
+1.  Start the Frontend: Launch the client as described in the "Frontend (Client)" section above.
+    
+2.  Start the Backend: Run the "SONIC-ACADEMY" backend locally. Update the server port in its environment variables (e.g., set it to 7171).
+    
+3.  Configure Client Environment Variables: In the client directory, set the following environment variables to point to your local backend, ensuring the port matches the one used by "SONIC-ACADEMY" (e.g., 7171):
+    
+    env
+    
+    ```text
+    NEXT_PUBLIC_CREATE_AGENT_URL=http://localhost:7171
+    NEXT_PUBLIC_CREATE_LESSON_URL=http://localhost:7171
+    ```
+    
+4.  With both the frontend and backend running, you should be able to test the SonicAcademy project locally.
+    
+
+Alternatively, the "SONIC-ACADEMY" backend is deployed live on the Railway platform. If you need the live URL for testing, please send me a direct message on Telegram at @thopate_vijay .
+
+
+## Available Agents
+
+SonicAcademy currently features three specialized agents, each designed to assist with different aspects of the Sonic blockchain ecosystem. Below is a list of the agents along with a concise description of their capabilities:
+
+1.  SonicAgent [See Character file here](https://github.com/thopatevijay/SONIC-ACADEMY/blob/main/agent/src/defaultCharacter.ts)
+    
+    -   A blockchain assistant that helps users execute token transfers and check wallet balances on the Sonic network.
+        
+2.  SonicTutor [See Character file here](https://github.com/thopatevijay/SONIC-ACADEMY/blob/main/agent/src/secondCharacter.ts)
+    
+    -   An AI educator that simplifies complex blockchain concepts and creates lessons using the provided knowledge base.
+        
+3.  Prof.SonicAcademy [See charcater file here](https://github.com/thopatevijay/Prof.SonicAcademy/blob/main/src/character.ts)
+    
+    -   An AI-driven Twitter agent that educates and engages the Sonic blockchain community, simplifying concepts and encouraging interaction.
 
 ## Usage
 
