@@ -114,17 +114,19 @@ export default function Lessons() {
                 const response = await fetch(`/api/get-user?userId=${user.id}`);
                 const data = await response.json();
                 setUserData(data.user);
-
-                if (lessonState.current === 0) {
-                    requestLessons(Lesson.LESSON_1);
-                    setLessonState(prev => ({ ...prev, current: 1 }));
-                }
             }
         };
 
         initializeLesson();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.id, router, ready, authenticated]);
+
+    useEffect(() => {
+        if (userData.ageGroup && lessonState.current === 0) {
+            requestLessons(Lesson.LESSON_1);
+            setLessonState(prev => ({ ...prev, current: 1 }));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userData, lessonState.current, requestLessons]);
 
     const handleLessonNavigation = (direction: NavigationDirection) => {
         if (lessonState.current === TOTAL_LESSONS && direction === 'next') {
