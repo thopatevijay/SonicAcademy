@@ -4,6 +4,8 @@ import "./globals.css";
 import Sidebar from "./components/Sidebar";
 import { Toaster } from "../../components/ui/sonner";
 import PrivyProviderClient from "./components/PrivyProviderClient";
+import { Analytics } from "@vercel/analytics/react"
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -34,6 +36,7 @@ export default function RootLayout({
               <div className="bg-grid"></div>
               {children}
               <Toaster />
+              <Analytics />
             </main>
           </div>
         </PrivyProviderClient>
